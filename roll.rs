@@ -8,7 +8,7 @@ pub struct Roll {
 }
 
 impl Roll {
-    pub fn from(a: i32, b: i32, c: i32, d: i32, e: i32) -> Roll {
+    pub fn of(a: i32, b: i32, c: i32, d: i32, e: i32) -> Roll {
         return Roll {
             dice: [
                 a.into(),
