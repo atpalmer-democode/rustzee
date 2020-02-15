@@ -1,7 +1,8 @@
 mod die;
+use die::Die;
 
 
 fn main() {
-    let die = die::Die::from(6);
+    let die = Die::from(6);
     println!("Die: {}", die);
 }
