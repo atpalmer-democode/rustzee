@@ -1,7 +1,18 @@
 use std::fmt::{Debug, Display, Formatter, Result};
+extern crate rand;
+use rand::Rng;
 
 pub struct Die {
     value: i32,
+}
+
+impl Die {
+    pub fn roll() -> Die {
+        let mut rng = rand::thread_rng();
+        return Die {
+            value: rng.gen_range(1, 7),
+        };
+    }
 }
 
 impl From<i32> for Die {
