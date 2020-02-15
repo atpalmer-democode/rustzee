@@ -27,18 +27,18 @@ impl From<[i32; 5]> for Roll {
 }
 
 impl Roll {
-    pub fn of(a: i32, b: i32, c: i32, d: i32, e: i32) -> Roll {
+    pub fn of(a: Die, b: Die, c: Die, d: Die, e: Die) -> Roll {
         return Roll::from([a, b, c, d, e]);
     }
 
     pub fn roll() -> Roll {
-        return Roll::from([
+        return Roll::of(
             Die::roll(),
             Die::roll(),
             Die::roll(),
             Die::roll(),
             Die::roll(),
-        ]);
+        );
     }
 }
 
