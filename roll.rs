@@ -7,6 +7,12 @@ pub struct Roll {
     dice: [Die; 5],
 }
 
+impl From<[Die; 5]> for Roll {
+    fn from(value: [Die; 5]) -> Roll {
+        return Roll { dice: value };
+    }
+}
+
 impl From<[i32; 5]> for Roll {
     fn from(value: [i32; 5]) -> Roll {
         let dice: [Die; 5] = [
@@ -16,7 +22,7 @@ impl From<[i32; 5]> for Roll {
             value[3].into(),
             value[4].into(),
         ];
-        return Roll { dice: dice };
+        return Roll::from(dice);
     }
 }
 
