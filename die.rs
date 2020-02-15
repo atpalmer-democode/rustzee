@@ -1,4 +1,4 @@
-use std::fmt::{Display, Formatter, Result};
+use std::fmt::{Debug, Display, Formatter, Result};
 
 pub struct Die {
     value: i32,
@@ -14,5 +14,11 @@ impl Die {
 impl Display for Die {
     fn fmt(&self, f: &mut Formatter) -> Result {
         return write!(f, "{}", self.value);
+    }
+}
+
+impl Debug for Die {
+    fn fmt(&self, f: &mut Formatter) -> Result {
+        return Display::fmt(self, f);
     }
 }
