@@ -11,11 +11,11 @@ impl Roll {
     pub fn from(a: i32, b: i32, c: i32, d: i32, e: i32) -> Roll {
         return Roll {
             dice: [
-                Die::from(a),
-                Die::from(b),
-                Die::from(c),
-                Die::from(d),
-                Die::from(e),
+                a.into(),
+                b.into(),
+                c.into(),
+                d.into(),
+                e.into(),
             ],
         };
     }
