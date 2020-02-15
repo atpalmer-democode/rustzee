@@ -30,6 +30,16 @@ impl Roll {
     pub fn of(a: i32, b: i32, c: i32, d: i32, e: i32) -> Roll {
         return Roll::from([a, b, c, d, e]);
     }
+
+    pub fn roll() -> Roll {
+        return Roll::from([
+            Die::roll(),
+            Die::roll(),
+            Die::roll(),
+            Die::roll(),
+            Die::roll(),
+        ]);
+    }
 }
 
 impl Display for Roll {
