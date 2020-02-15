@@ -3,6 +3,39 @@ use std::fmt::{Display, Formatter, Result};
 mod die;
 use self::die::Die;
 
+pub struct Keep {
+    dice: [bool; 5],
+}
+
+impl Keep {
+    pub fn dice(a: bool, b: bool, c: bool, d: bool, e: bool) -> Keep {
+        return Keep {
+            dice: [a, b, c, d, e],
+        };
+    }
+
+    fn keeping(&self) -> Vec<usize> {
+        let mut result = Vec::new();
+        for (i, keeping) in self.dice.iter().enumerate() {
+            if *keeping {
+                result.push(i);
+            }
+        }
+        return result;
+    }
+}
+
+impl Display for Keep {
+    fn fmt(&self, f: &mut Formatter) -> Result {
+        let indexes = self.keeping();
+        writeln!(f, "Keeping {}: [", indexes.len())?;
+        for i in indexes {
+            writeln!(f, "  {},", i)?;
+        }
+        return writeln!(f, "]");
+    }
+}
+
 pub struct Roll {
     dice: [Die; 5],
 }
