@@ -1,5 +1,6 @@
 mod roll;
 use roll::{Roll, Keep};
+mod scoring;
 
 
 fn main() {
@@ -11,4 +12,5 @@ fn main() {
 
     let reroll = roll.reroll(keep);
     println!("Reroll: {}", reroll);
+    println!("Score: {}", scoring::total(reroll));
 }

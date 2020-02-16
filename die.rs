@@ -13,6 +13,10 @@ impl Die {
             value: rng.gen_range(1, 7),
         };
     }
+
+    pub fn value(&self) -> i32 {
+        return self.value;
+    }
 }
 
 impl From<i32> for Die {

@@ -84,6 +84,15 @@ impl Roll {
     }
 }
 
+impl<'a> IntoIterator for &'a Roll {
+    type Item = &'a Die;
+    type IntoIter = std::slice::Iter<'a, Die>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        return self.dice.iter();
+    }
+}
+
 impl Display for Roll {
     fn fmt(&self, f: &mut Formatter) -> Result {
         return write!(f, "{:?}", self.dice);
