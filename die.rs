@@ -19,16 +19,16 @@ impl Die {
     }
 }
 
-impl From<i32> for Die {
-    fn from(value: i32) -> Die {
-        assert!(value >=1 && value <= 6, "Die value must be 1-6");
-        return Die { value: value };
+impl From<&i32> for Die {
+    fn from(value: &i32) -> Die {
+        assert!(*value >=1 && *value <= 6, "Die value must be 1-6");
+        return Die { value: *value };
     }
 }
 
 impl From<&Die> for Die {
     fn from(value: &Die) -> Die {
-        return Die::from(value.value);
+        return Die::from(&value.value);
     }
 }
 
