@@ -1,49 +1,55 @@
-use crate::die::Die;
 use crate::roll::Roll;
 
-struct ValueCounts {
-    counts: [i32; 6],
-}
+mod value_counts {
+    use crate::roll::Roll;
+    use crate::die::Die;
 
-impl ValueCounts {
-    fn count(&self, die: &Die) -> i32{
-        let die_value = die.value() as usize;
-        let index = die_value - 1;
-        return self.counts[index];
+    pub struct ValueCounts {
+        counts: [i32; 6],
     }
 
-    fn has_exact(&self, count: i32) -> bool {
-        for value in (1..7).rev() {
-            let die = Die::from(i32::from(value));
-            if self.count(&die) == count {
-                return true;
-            };
-        }
-        return false;
-    }
-
-    fn has_kind(&self, kind: i32) -> bool {
-        for value in (1..7).rev() {
-            let die = Die::from(i32::from(value));
-            if self.count(&die) >= kind {
-                return true;
-            };
-        }
-        return false;
-    }
-}
-
-impl From<&Roll> for ValueCounts {
-    fn from(roll: &Roll) -> ValueCounts {
-        let mut counts = [0; 6];
-        for die in roll {
+    impl ValueCounts {
+        fn count(&self, die: &Die) -> i32{
             let die_value = die.value() as usize;
             let index = die_value - 1;
-            counts[index] += 1;
+            return self.counts[index];
         }
-        return ValueCounts { counts: counts };
+
+        pub fn has_exact(&self, count: i32) -> bool {
+            for value in (1..7).rev() {
+                let die = Die::from(i32::from(value));
+                if self.count(&die) == count {
+                    return true;
+                };
+            }
+            return false;
+        }
+
+        pub fn has_kind(&self, kind: i32) -> bool {
+            for value in (1..7).rev() {
+                let die = Die::from(i32::from(value));
+                if self.count(&die) >= kind {
+                    return true;
+                };
+            }
+            return false;
+        }
+    }
+
+    impl From<&Roll> for ValueCounts {
+        fn from(roll: &Roll) -> ValueCounts {
+            let mut counts = [0; 6];
+            for die in roll {
+                let die_value = die.value() as usize;
+                let index = die_value - 1;
+                counts[index] += 1;
+            }
+            return ValueCounts { counts: counts };
+        }
     }
 }
+
+use value_counts::ValueCounts;
 
 pub fn total(roll: &Roll) -> i32 {
     let mut result: i32 = 0;
