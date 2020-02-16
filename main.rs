@@ -22,4 +22,5 @@ fn main() {
     println!("Score as 1s: {}", scoring::score_as(&reroll, 1));
     println!("4 of a kind: {}", scoring::four_of_a_kind(&reroll));
     println!("3 of a kind: {}", scoring::three_of_a_kind(&reroll));
+    println!("Rustzee: {}", scoring::rustzee(&reroll));
 }

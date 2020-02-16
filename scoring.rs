@@ -63,3 +63,11 @@ pub fn three_of_a_kind(roll: &Roll) -> i32 {
         false => 0,
     };
 }
+
+pub fn rustzee(roll: &Roll) -> i32 {
+    let counts = ValueCounts::from(roll);
+    return match counts.has_kind(5) {
+        true => 50,
+        false => 0,
+    };
+}
