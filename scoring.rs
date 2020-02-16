@@ -66,15 +66,19 @@ mod value_counts {
     }
 }
 
-use value_counts::ValueCounts;
+mod helpers {
+    use crate::roll::Roll;
 
-pub fn total(roll: &Roll) -> i32 {
-    let mut result: i32 = 0;
-    for die in roll.into_iter() {
-        result += die.value();
+    pub fn total(roll: &Roll) -> i32 {
+        let mut result: i32 = 0;
+        for die in roll.into_iter() {
+            result += die.value();
+        }
+        return result;
     }
-    return result;
 }
+
+use value_counts::ValueCounts;
 
 pub fn score_as(roll: &Roll, value: i32) -> i32 {
     let count = roll.count_values(value);
@@ -84,7 +88,7 @@ pub fn score_as(roll: &Roll, value: i32) -> i32 {
 pub fn four_of_a_kind(roll: &Roll) -> i32 {
     let counts = ValueCounts::from(roll);
     return match counts.has_kind(4) {
-        true => total(roll),
+        true => helpers::total(roll),
         false => 0,
     };
 }
@@ -92,7 +96,7 @@ pub fn four_of_a_kind(roll: &Roll) -> i32 {
 pub fn three_of_a_kind(roll: &Roll) -> i32 {
     let counts = ValueCounts::from(roll);
     return match counts.has_kind(3) {
-        true => total(roll),
+        true => helpers::total(roll),
         false => 0,
     };
 }
@@ -128,4 +132,8 @@ pub fn rustzee(roll: &Roll) -> i32 {
         true => 50,
         false => 0,
     };
+}
+
+pub fn chance(roll: &Roll) -> i32 {
+    return helpers::total(roll);
 }
