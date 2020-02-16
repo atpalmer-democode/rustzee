@@ -1,7 +1,8 @@
 mod die;
 mod roll;
-use roll::{Roll, Keep};
 mod scoring;
+
+use roll::{Roll, Keep};
 
 fn display(roll: &Roll) {
     println!("Roll: {}", roll);
