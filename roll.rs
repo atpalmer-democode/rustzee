@@ -1,7 +1,5 @@
 use std::fmt::{Display, Formatter, Result};
-#[path = "die.rs"]
-mod die;
-use self::die::Die;
+use crate::die::Die;
 
 pub struct Keep {
     dice: [bool; 5],

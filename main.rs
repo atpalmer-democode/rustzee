@@ -1,3 +1,4 @@
+mod die;
 mod roll;
 use roll::{Roll, Keep};
 mod scoring;
