@@ -22,7 +22,7 @@ fn display(roll: &Roll) {
 
 fn main() {
     let roll = Roll::roll();
-    println!("Dice: {}", roll);
+    display(&roll);
 
     let keep = Keep::dice(true, true, true, false, false);
     println!("Keep: {}", keep);
