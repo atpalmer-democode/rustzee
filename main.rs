@@ -23,5 +23,7 @@ fn main() {
     println!("4 of a kind: {}", scoring::four_of_a_kind(&reroll));
     println!("3 of a kind: {}", scoring::three_of_a_kind(&reroll));
     println!("Full House: {}", scoring::full_house(&reroll));
+    println!("Small Straight: {}", scoring::small_straight(&reroll));
+    println!("Large Straight: {}", scoring::large_straight(&reroll));
     println!("Rustzee: {}", scoring::rustzee(&reroll));
 }

@@ -34,6 +34,23 @@ mod value_counts {
             }
             return false;
         }
+
+        pub fn straight_len(&self) -> i32 {
+            let mut maxlen = 0;
+            let mut len = 0;
+            for value in 1..7 {
+                let die = Die::from(i32::from(value));
+                len = match self.count(&die) > 0 {
+                    true => len + 1,
+                    false => 0,
+                };
+                maxlen = match len > maxlen {
+                    true => len,
+                    false => maxlen,
+                };
+            }
+            return maxlen;
+        }
     }
 
     impl From<&Roll> for ValueCounts {
@@ -85,6 +102,22 @@ pub fn full_house(roll: &Roll) -> i32 {
     let is_fullhouse = counts.has_exact(3) && counts.has_exact(2);
     return match is_fullhouse {
         true => 25,
+        false => 0,
+    };
+}
+
+pub fn small_straight(roll: &Roll) -> i32 {
+    let counts = ValueCounts::from(roll);
+    return match counts.straight_len() == 4 {
+        true => 30,
+        false => 0,
+    };
+}
+
+pub fn large_straight(roll: &Roll) -> i32 {
+    let counts = ValueCounts::from(roll);
+    return match counts.straight_len() == 5 {
+        true => 40,
         false => 0,
     };
 }
