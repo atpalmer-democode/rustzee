@@ -22,6 +22,12 @@ impl From<i32> for Die {
     }
 }
 
+impl From<&Die> for Die {
+    fn from(value: &Die) -> Die {
+        return Die::from(value.value);
+    }
+}
+
 impl Display for Die {
     fn fmt(&self, f: &mut Formatter) -> Result {
         return write!(f, "{}", self.value);

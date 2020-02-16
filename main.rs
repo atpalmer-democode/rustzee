@@ -8,4 +8,7 @@ fn main() {
 
     let keep = Keep::dice(true, true, true, false, false);
     println!("Keep: {}", keep);
+
+    let reroll = roll.reroll(keep);
+    println!("Reroll: {}", reroll);
 }

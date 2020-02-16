@@ -23,6 +23,13 @@ impl Keep {
         }
         return result;
     }
+
+    fn at_or_new(&self, roll: &Roll, i: usize) -> Die {
+        return match self.dice[i] {
+            true => Die::from(&roll.dice[i]),
+            false => Die::roll(),
+        };
+    }
 }
 
 impl Display for Keep {
@@ -59,6 +66,17 @@ impl Roll {
             Die::roll(),
             Die::roll(),
         );
+    }
+
+    pub fn reroll(&self, keep: Keep) -> Roll {
+        let new_dice: [Die; 5] = [
+            keep.at_or_new(&self, 0),
+            keep.at_or_new(&self, 1),
+            keep.at_or_new(&self, 2),
+            keep.at_or_new(&self, 3),
+            keep.at_or_new(&self, 4),
+        ];
+        return Roll::from(new_dice);
     }
 }
 
