@@ -13,4 +13,10 @@ fn main() {
     let reroll = roll.reroll(keep);
     println!("Reroll: {}", reroll);
     println!("Score: {}", scoring::total(&reroll));
+    println!("Score as 6s: {}", scoring::score_as(&reroll, 6));
+    println!("Score as 5s: {}", scoring::score_as(&reroll, 5));
+    println!("Score as 4s: {}", scoring::score_as(&reroll, 4));
+    println!("Score as 3s: {}", scoring::score_as(&reroll, 3));
+    println!("Score as 2s: {}", scoring::score_as(&reroll, 2));
+    println!("Score as 1s: {}", scoring::score_as(&reroll, 1));
 }

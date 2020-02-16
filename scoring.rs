@@ -7,3 +7,8 @@ pub fn total(roll: &Roll) -> i32 {
     }
     return result;
 }
+
+pub fn score_as(roll: &Roll, value: i32) -> i32 {
+    let count = roll.count_values(value);
+    return count * value;
+}
