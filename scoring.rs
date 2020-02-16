@@ -12,6 +12,16 @@ impl ValueCounts {
         return self.counts[index];
     }
 
+    fn has_exact(&self, count: i32) -> bool {
+        for value in (1..7).rev() {
+            let die = Die::from(i32::from(value));
+            if self.count(&die) == count {
+                return true;
+            };
+        }
+        return false;
+    }
+
     fn has_kind(&self, kind: i32) -> bool {
         for value in (1..7).rev() {
             let die = Die::from(i32::from(value));
@@ -60,6 +70,15 @@ pub fn three_of_a_kind(roll: &Roll) -> i32 {
     let counts = ValueCounts::from(roll);
     return match counts.has_kind(3) {
         true => total(roll),
+        false => 0,
+    };
+}
+
+pub fn full_house(roll: &Roll) -> i32 {
+    let counts = ValueCounts::from(roll);
+    let is_fullhouse = counts.has_exact(3) && counts.has_exact(2);
+    return match is_fullhouse {
+        true => 25,
         false => 0,
     };
 }
