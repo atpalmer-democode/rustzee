@@ -12,5 +12,5 @@ fn main() {
 
     let reroll = roll.reroll(keep);
     println!("Reroll: {}", reroll);
-    println!("Score: {}", scoring::total(reroll));
+    println!("Score: {}", scoring::total(&reroll));
 }
