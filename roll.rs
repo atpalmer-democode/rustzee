@@ -26,7 +26,7 @@ impl Keep {
 
     fn at_or_new(&self, roll: &Roll, i: usize) -> Die {
         return match self.dice[i] {
-            true => Die::from(&roll.dice[i]),
+            true => Die::from(roll.at(i)),
             false => Die::roll(),
         };
     }
@@ -77,6 +77,10 @@ impl Roll {
             keep.at_or_new(&self, 4),
         ];
         return Roll::from(new_dice);
+    }
+
+    fn at(&self, i: usize) -> &Die {
+        return &self.dice[i];
     }
 }
 
