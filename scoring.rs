@@ -48,6 +48,14 @@ pub fn score_as(roll: &Roll, value: i32) -> i32 {
     return count * value;
 }
 
+pub fn four_of_a_kind(roll: &Roll) -> i32 {
+    let counts = ValueCounts::from(roll);
+    return match counts.has_kind(4) {
+        true => total(roll),
+        false => 0,
+    };
+}
+
 pub fn three_of_a_kind(roll: &Roll) -> i32 {
     let counts = ValueCounts::from(roll);
     return match counts.has_kind(3) {
