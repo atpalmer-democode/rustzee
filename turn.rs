@@ -16,6 +16,10 @@ impl TurnState {
         };
     }
 
+    pub fn has_rolls(&self, allowed: i32) -> bool {
+        return self.roll_count < allowed;
+    }
+
     pub fn roll(&mut self) {
         self.current = Some(Roll::roll());
         self.roll_count = self.roll_count + 1;
