@@ -6,7 +6,25 @@ mod turn;
 use roll::Keep;
 use turn::TurnState;
 
-use text_io;
+mod console {
+    use text_io;
+
+    pub fn get_bool(prompt: String) -> bool {
+        loop {
+            println!("{}", prompt);
+            let val: String = text_io::read!();
+            let result = match &*val {
+                "Y" | "y" => Some(true),
+                "N" | "n" => Some(false),
+                _ => None,
+            };
+            match result {
+                None => continue,
+                Some(x) => return x,
+            }
+        }
+    }
+}
 
 fn main() {
     let mut turn = TurnState::new();
@@ -17,25 +35,8 @@ fn main() {
     while turn.has_rolls(3) {
         let mut keepers: [bool; 5] = [true; 5];
         for (i, die) in turn.die_iter().enumerate() {
-            loop {
-                println!("Keep die: {}? [Y/N]", die);
-                let val: String = text_io::read!();
-                let keep = match &*val {
-                    "Y" | "y" => Some(true),
-                    "N" | "n" => Some(false),
-                    _ => None,
-                };
-                 match keep {
-                    Some(x) => {
-                        keepers[i] = x;
-                        break;
-                    },
-                    None => {
-                        println!("Try again");
-                        continue;
-                    },
-                }
-            }
+            let prompt = format!("Keep die: {}? [Y/N]", die);
+            keepers[i] = console::get_bool(prompt);
         }
 
         let keep = Keep::new(keepers);
