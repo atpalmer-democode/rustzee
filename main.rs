@@ -30,9 +30,13 @@ fn main() {
     let mut turn = TurnState::new();
 
     turn.roll();
-    println!("{}", &turn);
 
     while turn.has_rolls(3) {
+        println!("{}", &turn);
+        let roll_again = console::get_bool(format!("Roll again? [Y/N]"));
+        if !roll_again {
+            break;
+        }
         let mut keepers: [bool; 5] = [true; 5];
         for (i, die) in turn.die_iter().enumerate() {
             let prompt = format!("Keep die: {}? [Y/N]", die);
@@ -42,6 +46,5 @@ fn main() {
         let keep = Keep::new(keepers);
         println!("Keeping: {}", keep);
         turn.reroll(keep);
-        println!("{}", &turn);
     }
 }
