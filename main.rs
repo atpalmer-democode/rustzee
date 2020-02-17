@@ -8,6 +8,9 @@ use turn::TurnState;
 use scorecard::ScoreCard;
 
 mod scorecard {
+    use crate::scoring;
+    use crate::roll::Roll;
+
     #[derive(Default)]
     pub struct ScoreCard {
         aces: i32,
@@ -75,6 +78,10 @@ mod scorecard {
         pub fn total(&self) -> i32 {
             return self.top_total() + self.bottom_total();
         }
+
+        pub fn score_aces(&mut self, roll: &Roll) {
+            self.aces = scoring::score_as(roll, 1);
+        }
     }
 }
 
@@ -99,7 +106,7 @@ mod console {
 }
 
 fn main() {
-    let scorecard = ScoreCard::new();
+    let mut scorecard = ScoreCard::new();
     println!("Score: {}", scorecard.total());
 
     let mut turn = TurnState::new();
@@ -122,4 +129,7 @@ fn main() {
         println!("Keeping: {}", keep);
         turn.reroll(keep);
     }
+
+    scorecard.score_aces(&turn.current());
+    println!("Score: {}", scorecard.total());
 }

@@ -33,6 +33,10 @@ impl TurnState {
     pub fn die_iter(&self) -> std::slice::Iter<Die> {
         return self.current.as_ref().unwrap().into_iter();
     }
+
+    pub fn current(&self) -> &Roll {
+        return self.current.as_ref().unwrap();
+    }
 }
 
 impl fmt::Display for TurnState {
