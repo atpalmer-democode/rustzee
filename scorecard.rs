@@ -3,12 +3,12 @@ use crate::roll::Roll;
 
 #[derive(Default)]
 pub struct ScoreCard {
-    aces: i32,
-    twos: i32,
-    threes: i32,
-    fours: i32,
-    fives: i32,
-    sixes: i32,
+    aces: Option<i32>,
+    twos: Option<i32>,
+    threes: Option<i32>,
+    fours: Option<i32>,
+    fives: Option<i32>,
+    sixes: Option<i32>,
     three_of_a_kind: i32,
     four_of_a_kind: i32,
     full_house: i32,
@@ -33,7 +33,7 @@ impl ScoreCard {
             self.fives,
             self.sixes,
         ];
-        return items.iter().sum();
+        return items.iter().filter(|x|{x.is_some()}).map(|x|{x.unwrap()}).sum();
     }
 
     fn top_bonus(&self) -> i32 {
@@ -73,27 +73,27 @@ impl ScoreCard {
 /* Mutators */
 impl ScoreCard {
     pub fn score_aces(&mut self, roll: &Roll) {
-        self.aces = scoring::score_as(roll, 1);
+        self.aces = Some(scoring::score_as(roll, 1));
     }
 
     pub fn score_twos(&mut self, roll: &Roll) {
-        self.twos = scoring::score_as(roll, 2);
+        self.twos = Some(scoring::score_as(roll, 2));
     }
 
     pub fn score_threes(&mut self, roll: &Roll) {
-        self.threes = scoring::score_as(roll, 3);
+        self.threes = Some(scoring::score_as(roll, 3));
     }
 
     pub fn score_fours(&mut self, roll: &Roll) {
-        self.fives = scoring::score_as(roll, 4);
+        self.fives = Some(scoring::score_as(roll, 4));
     }
 
     pub fn score_fives(&mut self, roll: &Roll) {
-        self.fives = scoring::score_as(roll, 5);
+        self.fives = Some(scoring::score_as(roll, 5));
     }
 
     pub fn score_sixes(&mut self, roll: &Roll) {
-        self.sixes = scoring::score_as(roll, 6);
+        self.sixes = Some(scoring::score_as(roll, 6));
     }
 
     pub fn score_three_of_a_kind(&mut self, roll: &Roll) {
