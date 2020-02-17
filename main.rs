@@ -2,7 +2,36 @@ mod die;
 mod roll;
 mod scoring;
 
+use std::fmt;
 use roll::{Roll, Keep};
+
+struct TurnState {
+    current: Option<Roll>,
+    roll_count: i32,
+}
+
+impl TurnState {
+    fn new() -> TurnState {
+        return TurnState {
+            current: None,
+            roll_count: 0,
+        };
+    }
+
+    fn roll(&mut self) {
+        self.current = Some(Roll::roll());
+        self.roll_count = self.roll_count + 1;
+    }
+}
+
+impl fmt::Display for TurnState {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        return match &self.current {
+            Some(x) => write!(f, "{}", x),
+            None => write!(f, ""),
+        };
+    }
+}
 
 fn display(roll: &Roll) {
     println!("Roll: {}", roll);
@@ -22,6 +51,17 @@ fn display(roll: &Roll) {
 }
 
 fn main() {
+    let mut turn = TurnState::new();
+
+    turn.roll();
+
+    println!("Turn: {}", &turn);
+
+    match turn.current {
+        Some(x) => display(&x),
+        None => {},
+    };
+
     let roll = Roll::roll();
     display(&roll);
 
