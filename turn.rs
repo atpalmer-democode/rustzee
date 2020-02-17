@@ -1,4 +1,5 @@
 use std::fmt;
+use crate::die::Die;
 use crate::roll::{Roll, Keep};
 use crate::scoring;
 
@@ -23,6 +24,10 @@ impl TurnState {
     pub fn reroll(&mut self, keep: Keep) {
         self.current = Some(Roll::reroll(&self.current.as_ref().unwrap(), keep));
         self.roll_count = self.roll_count + 1;
+    }
+
+    pub fn die_iter(&self) -> std::slice::Iter<Die> {
+        return self.current.as_ref().unwrap().into_iter();
     }
 }
 

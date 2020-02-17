@@ -7,10 +7,8 @@ pub struct Keep {
 }
 
 impl Keep {
-    pub fn dice(a: bool, b: bool, c: bool, d: bool, e: bool) -> Keep {
-        return Keep {
-            dice: [a, b, c, d, e],
-        };
+    pub fn new(keepers: [bool; 5]) -> Keep {
+        return Keep { dice: keepers };
     }
 
     fn keeping(&self) -> Vec<usize> {
