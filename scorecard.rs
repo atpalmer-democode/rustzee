@@ -9,13 +9,13 @@ pub struct ScoreCard {
     fours: Option<i32>,
     fives: Option<i32>,
     sixes: Option<i32>,
-    three_of_a_kind: i32,
-    four_of_a_kind: i32,
-    full_house: i32,
-    small_straight: i32,
-    large_straight: i32,
-    rustzee: i32,
-    chance: i32,
+    three_of_a_kind: Option<i32>,
+    four_of_a_kind: Option<i32>,
+    full_house: Option<i32>,
+    small_straight: Option<i32>,
+    large_straight: Option<i32>,
+    rustzee: Option<i32>,
+    chance: Option<i32>,
     bonus: Vec<i32>,
 }
 
@@ -33,7 +33,7 @@ impl ScoreCard {
             self.fives,
             self.sixes,
         ];
-        return items.iter().filter(|x|{x.is_some()}).map(|x|{x.unwrap()}).sum();
+        return items.iter().map(|x|{x.unwrap_or(0)}).sum();
     }
 
     fn top_bonus(&self) -> i32 {
@@ -60,9 +60,9 @@ impl ScoreCard {
             self.large_straight,
             self.rustzee,
             self.chance,
-            self.rustzee_bonus(),
+            Some(self.rustzee_bonus()),
         ];
-        return items.iter().sum();
+        return items.iter().map(|x|{x.unwrap_or(0)}).sum();
     }
 
     pub fn total(&self) -> i32 {
@@ -97,27 +97,27 @@ impl ScoreCard {
     }
 
     pub fn score_three_of_a_kind(&mut self, roll: &Roll) {
-        self.three_of_a_kind = scoring::three_of_a_kind(roll);
+        self.three_of_a_kind = Some(scoring::three_of_a_kind(roll));
     }
 
     pub fn score_four_of_a_kind(&mut self, roll: &Roll) {
-        self.four_of_a_kind = scoring::four_of_a_kind(roll);
+        self.four_of_a_kind = Some(scoring::four_of_a_kind(roll));
     }
 
     pub fn score_full_house(&mut self, roll: &Roll) {
-        self.full_house = scoring::full_house(roll);
+        self.full_house = Some(scoring::full_house(roll));
     }
 
     pub fn score_small_straight(&mut self, roll: &Roll) {
-        self.small_straight = scoring::small_straight(roll);
+        self.small_straight = Some(scoring::small_straight(roll));
     }
 
     pub fn score_large_straight(&mut self, roll: &Roll) {
-        self.large_straight = scoring::large_straight(roll);
+        self.large_straight = Some(scoring::large_straight(roll));
     }
 
     pub fn score_chance(&mut self, roll: &Roll) {
-        self.chance = scoring::chance(roll);
+        self.chance = Some(scoring::chance(roll));
     }
 
     /* TODO: rustzee and rustzee_bonus */
