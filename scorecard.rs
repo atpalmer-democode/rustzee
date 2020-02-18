@@ -71,21 +71,24 @@ impl ScoreCard {
 
     pub fn options(&self) -> Vec<String> {
         let items = [
-            (self.aces, "Aces"),
-            (self.twos, "Twos"),
-            (self.threes, "Threes"),
-            (self.fours, "Fours"),
-            (self.fives, "Fives"),
-            (self.sixes, "Sixes"),
-            (self.three_of_a_kind, "3 of a Kind"),
-            (self.four_of_a_kind, "4 of a Kind"),
-            (self.full_house, "Full House"),
-            (self.small_straight, "Sm. Straight"),
-            (self.large_straight, "Lg. Stright"),
-            (self.rustzee, "Rustzee"),
-            (self.chance, "Chance"),
+            (self.aces, 1, "Aces"),
+            (self.twos, 2, "Twos"),
+            (self.threes, 3, "Threes"),
+            (self.fours, 4, "Fours"),
+            (self.fives, 5, "Fives"),
+            (self.sixes, 6, "Sixes"),
+            (self.three_of_a_kind, 7, "3 of a Kind"),
+            (self.four_of_a_kind, 8, "4 of a Kind"),
+            (self.full_house, 9, "Full House"),
+            (self.small_straight, 10, "Sm. Straight"),
+            (self.large_straight, 11, "Lg. Stright"),
+            (self.rustzee, 12, "Rustzee"),
+            (self.chance, 13, "Chance"),
         ];
-        return items.iter().filter(|x|{x.0.is_none()}).map(|x|{String::from(x.1)}).collect();
+        return items.iter()
+            .filter(|x|{x.0.is_none()})
+            .map(|x|{format!("{:>2}.) {}", x.1, x.2)})
+            .collect();
     }
 }
 
