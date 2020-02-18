@@ -53,6 +53,11 @@ fn main() {
         turn.reroll(keep);
     }
 
+    println!("Available ScoreCard options:");
+    for line in scorecard.options() {
+        println!("{}", line);
+    }
+
     scorecard.score_aces(&turn.current());
     scorecard.score_twos(&turn.current());
     scorecard.score_threes(&turn.current());

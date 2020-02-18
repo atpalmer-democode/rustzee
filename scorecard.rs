@@ -68,6 +68,25 @@ impl ScoreCard {
     pub fn total(&self) -> i32 {
         return self.top_total() + self.bottom_total();
     }
+
+    pub fn options(&self) -> Vec<String> {
+        let items = [
+            (self.aces, "Aces"),
+            (self.twos, "Twos"),
+            (self.threes, "Threes"),
+            (self.fours, "Fours"),
+            (self.fives, "Fives"),
+            (self.sixes, "Sixes"),
+            (self.three_of_a_kind, "3 of a Kind"),
+            (self.four_of_a_kind, "4 of a Kind"),
+            (self.full_house, "Full House"),
+            (self.small_straight, "Sm. Straight"),
+            (self.large_straight, "Lg. Stright"),
+            (self.rustzee, "Rustzee"),
+            (self.chance, "Chance"),
+        ];
+        return items.iter().filter(|x|{x.0.is_none()}).map(|x|{String::from(x.1)}).collect();
+    }
 }
 
 /* Mutators */
