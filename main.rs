@@ -38,6 +38,7 @@ fn main() {
 
     while turn.has_rolls() {
         println!("{}", &turn);
+        println!("Rolls left: {} of {}", turn.rolls_left(), TurnState::MAX_ROLLS);
         let roll_again = console::get_bool(format!("Roll again? [Y/N]"));
         if !roll_again {
             break;
