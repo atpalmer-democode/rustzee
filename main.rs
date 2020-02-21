@@ -54,7 +54,7 @@ fn main() {
     }
 
     println!("Available ScoreCard options:");
-    for line in scorecard.options() {
+    for line in scorecard.options(&turn.current()) {
         println!("{}", line);
     }
 
