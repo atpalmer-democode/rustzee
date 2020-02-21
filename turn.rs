@@ -2,6 +2,8 @@ use std::fmt;
 use crate::die::Die;
 use crate::roll::{Roll, Keep};
 
+const MAX_ROLLS: i32 = 3;
+
 pub struct TurnState {
     current: Option<Roll>,
     roll_count: i32,
@@ -15,8 +17,8 @@ impl TurnState {
         };
     }
 
-    pub fn has_rolls(&self, allowed: i32) -> bool {
-        return self.roll_count < allowed;
+    pub fn has_rolls(&self) -> bool {
+        return self.roll_count < MAX_ROLLS;
     }
 
     pub fn roll(&mut self) {

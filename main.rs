@@ -36,7 +36,7 @@ fn main() {
 
     turn.roll();
 
-    while turn.has_rolls(3) {
+    while turn.has_rolls() {
         println!("{}", &turn);
         let roll_again = console::get_bool(format!("Roll again? [Y/N]"));
         if !roll_again {
