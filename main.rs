@@ -1,11 +1,11 @@
 mod die;
 mod roll;
-mod scorecard;
+mod scoring;
 mod turn;
 
 use roll::Keep;
 use turn::TurnState;
-use scorecard::ScoreCard;
+use scoring::scorecard::ScoreCard;
 
 mod console {
     use text_io;
