@@ -1,4 +1,5 @@
-use crate::scoring;
+mod scoring;
+
 use crate::roll::Roll;
 
 #[derive(Default)]

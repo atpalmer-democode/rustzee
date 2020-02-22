@@ -1,7 +1,6 @@
 mod die;
 mod roll;
 mod scorecard;
-mod scoring;
 mod turn;
 
 use roll::Keep;
