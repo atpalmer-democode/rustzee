@@ -25,6 +25,18 @@ mod console {
             }
         }
     }
+
+    pub fn get_i32(prompt: String) -> i32 {
+        loop {
+            println!("{}", prompt);
+            let val: String = text_io::read!();
+            let result = val.parse::<i32>();
+            match result {
+                Err(_) => continue,
+                Ok(x) => return x,
+            }
+        }
+    }
 }
 
 fn main() {
@@ -57,6 +69,9 @@ fn main() {
     for line in scorecard.options(&turn.current()) {
         println!("{}", line);
     }
+
+    let scoring_choice = console::get_i32(format!("Scoring choice:"));
+    println!("Your choice: {}", scoring_choice);
 
     scorecard.score_aces(&turn.current());
     scorecard.score_twos(&turn.current());
