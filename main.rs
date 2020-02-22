@@ -72,6 +72,7 @@ fn main() {
 
     let scoring_choice = console::get_i32(format!("Scoring choice:"));
     println!("Your choice: {}", scoring_choice);
+    println!("Available? {}", scorecard.is_option_available(scoring_choice));
 
     scorecard.score_aces(&turn.current());
     scorecard.score_twos(&turn.current());
