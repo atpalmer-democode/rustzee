@@ -16,7 +16,7 @@ pub struct ScoreCard {
     large_straight: Option<i32>,
     rustzee: Option<i32>,
     chance: Option<i32>,
-    bonus: Vec<i32>,
+    rustzee_bonus: i32,
 }
 
 impl ScoreCard {
@@ -47,10 +47,6 @@ impl ScoreCard {
         return self.top_subtotal() + self.top_bonus();
     }
 
-    fn rustzee_bonus(&self) -> i32 {
-        return self.bonus.iter().sum();
-    }
-
     fn bottom_total(&self) -> i32 {
         let items = [
             self.three_of_a_kind,
@@ -60,7 +56,7 @@ impl ScoreCard {
             self.large_straight,
             self.rustzee,
             self.chance,
-            Some(self.rustzee_bonus()),
+            Some(self.rustzee_bonus),
         ];
         return items.iter().map(|x|{x.unwrap_or(0)}).sum();
     }
