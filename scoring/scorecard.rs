@@ -91,6 +91,25 @@ impl ScoreCard {
             .collect();
     }
 
+    fn score_func_by_option(choice: i32) -> Option<fn(&mut ScoreCard, &Roll) -> Result<i32, i32>> {
+        return match choice {
+            1 => Some(Self::score_aces),
+            2 => Some(Self::score_twos),
+            3 => Some(Self::score_threes),
+            4 => Some(Self::score_fours),
+            5 => Some(Self::score_fives),
+            6 => Some(Self::score_sixes),
+            7 => Some(Self::score_three_of_a_kind),
+            8 => Some(Self::score_four_of_a_kind),
+            9 => Some(Self::score_full_house),
+            10 => Some(Self::score_small_straight),
+            11 => Some(Self::score_large_straight),
+            // TODO: rustzee
+            13 => Some(Self::score_chance),
+            _ => None,
+        };
+    }
+
     pub fn is_option_available(&self, option: i32) -> bool {
         let items = [
             (self.aces, 1),
@@ -125,22 +144,7 @@ impl ScoreCard {
     }
 
     pub fn score_by_option(&mut self, roll: &Roll, choice: i32) -> Result<i32, i32> {
-        let fopt: Option<fn(&mut ScoreCard, &Roll) -> Result<i32, i32>> = match choice {
-            1 => Some(Self::score_aces),
-            2 => Some(Self::score_twos),
-            3 => Some(Self::score_threes),
-            4 => Some(Self::score_fours),
-            5 => Some(Self::score_fives),
-            6 => Some(Self::score_sixes),
-            7 => Some(Self::score_three_of_a_kind),
-            8 => Some(Self::score_four_of_a_kind),
-            9 => Some(Self::score_full_house),
-            10 => Some(Self::score_small_straight),
-            11 => Some(Self::score_large_straight),
-            // TODO: rustzee
-            13 => Some(Self::score_chance),
-            _ => None,
-        };
+        let fopt = Self::score_func_by_option(choice);
         return match fopt {
             Some(f) => f(self, roll),
             None => Err(0),
