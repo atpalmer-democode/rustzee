@@ -111,23 +111,8 @@ impl ScoreCard {
     }
 
     pub fn is_option_available(&self, option: i32) -> bool {
-        let items = [
-            (self.aces, 1),
-            (self.twos, 2),
-            (self.threes, 3),
-            (self.fours, 4),
-            (self.fives, 5),
-            (self.sixes, 6),
-            (self.three_of_a_kind, 7),
-            (self.four_of_a_kind, 8),
-            (self.full_house, 9),
-            (self.small_straight, 10),
-            (self.large_straight, 11),
-            (self.rustzee, 12), // TODO: account for rustzee bonuses
-            (self.chance, 13),
-        ];
-        return match items.iter().find(|x| x.1 == option) {
-            Some(x) => x.0.is_none(),
+        return match Self::score_func_by_option(option) {
+            Some(_) => true,
             None => false,
         };
     }
