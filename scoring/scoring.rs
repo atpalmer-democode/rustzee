@@ -110,7 +110,3 @@ pub fn large_straight(roll: &Roll) -> i32 {
         false => 0,
     };
 }
-
-pub fn chance(roll: &Roll) -> i32 {
-    return total(roll);
-}

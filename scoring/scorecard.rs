@@ -197,7 +197,8 @@ impl ScoreCard {
     }
 
     fn score_chance(&mut self, roll: &Roll) -> Result<i32, i32> {
-        return Self::do_score(&mut self.chance, scoring::chance(roll));
+        let result = scoring::total(roll);
+        return Self::do_score(&mut self.chance, result);
     }
 
     /* TODO: rustzee and rustzee_bonus */
