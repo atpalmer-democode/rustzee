@@ -131,7 +131,7 @@ impl ScoreCard {
 
 /* Mutators */
 impl ScoreCard {
-    fn do_score(target: &mut Option<i32>, result: i32) -> Result<i32, i32> {
+    fn try_set(target: &mut Option<i32>, result: i32) -> Result<i32, i32> {
         if target.is_some() {
             return Err(target.unwrap());
         }
@@ -149,32 +149,32 @@ impl ScoreCard {
 
     fn score_aces(&mut self, roll: &Roll) -> Result<i32, i32> {
         let result = roll.count_values(1) * 1;
-        return Self::do_score(&mut self.aces, result);
+        return Self::try_set(&mut self.aces, result);
     }
 
     fn score_twos(&mut self, roll: &Roll) -> Result<i32, i32> {
         let result = roll.count_values(2) * 2;
-        return Self::do_score(&mut self.aces, result);
+        return Self::try_set(&mut self.aces, result);
     }
 
     fn score_threes(&mut self, roll: &Roll) -> Result<i32, i32> {
         let result = roll.count_values(3) * 3;
-        return Self::do_score(&mut self.aces, result);
+        return Self::try_set(&mut self.aces, result);
     }
 
     fn score_fours(&mut self, roll: &Roll) -> Result<i32, i32> {
         let result = roll.count_values(4) * 4;
-        return Self::do_score(&mut self.aces, result);
+        return Self::try_set(&mut self.aces, result);
     }
 
     fn score_fives(&mut self, roll: &Roll) -> Result<i32, i32> {
         let result = roll.count_values(5) * 5;
-        return Self::do_score(&mut self.aces, result);
+        return Self::try_set(&mut self.aces, result);
     }
 
     fn score_sixes(&mut self, roll: &Roll) -> Result<i32, i32> {
         let result = roll.count_values(6) * 6;
-        return Self::do_score(&mut self.aces, result);
+        return Self::try_set(&mut self.aces, result);
     }
 
     fn score_three_of_a_kind(&mut self, roll: &Roll) -> Result<i32, i32> {
@@ -183,7 +183,7 @@ impl ScoreCard {
             true => helpers::total(roll),
             false => 0,
         };
-        return Self::do_score(&mut self.three_of_a_kind, result);
+        return Self::try_set(&mut self.three_of_a_kind, result);
     }
 
     fn score_four_of_a_kind(&mut self, roll: &Roll) -> Result<i32, i32> {
@@ -192,7 +192,7 @@ impl ScoreCard {
             true => helpers::total(roll),
             false => 0,
         };
-        return Self::do_score(&mut self.four_of_a_kind, result);
+        return Self::try_set(&mut self.four_of_a_kind, result);
     }
 
     fn score_full_house(&mut self, roll: &Roll) -> Result<i32, i32> {
@@ -201,7 +201,7 @@ impl ScoreCard {
             true => 25,
             false => 0,
         };
-        return Self::do_score(&mut self.full_house, result);
+        return Self::try_set(&mut self.full_house, result);
     }
 
     fn score_small_straight(&mut self, roll: &Roll) -> Result<i32, i32> {
@@ -210,7 +210,7 @@ impl ScoreCard {
             true => 30,
             false => 0,
         };
-        return Self::do_score(&mut self.small_straight, result);
+        return Self::try_set(&mut self.small_straight, result);
     }
 
     fn score_large_straight(&mut self, roll: &Roll) -> Result<i32, i32> {
@@ -219,12 +219,12 @@ impl ScoreCard {
             true => 40,
             false => 0,
         };
-        return Self::do_score(&mut self.large_straight, result);
+        return Self::try_set(&mut self.large_straight, result);
     }
 
     fn score_chance(&mut self, roll: &Roll) -> Result<i32, i32> {
         let result = helpers::total(roll);
-        return Self::do_score(&mut self.chance, result);
+        return Self::try_set(&mut self.chance, result);
     }
 
     /* TODO: rustzee and rustzee_bonus */
