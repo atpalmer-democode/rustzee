@@ -213,7 +213,12 @@ impl ScoreCard {
     }
 
     fn score_large_straight(&mut self, roll: &Roll) -> Result<i32, i32> {
-        return Self::do_score(&mut self.large_straight, scoring::large_straight(roll));
+        let counts = scoring::ValueCounts::from(roll);
+        let result = match counts.straight_len() == 5 {
+            true => 40,
+            false => 0,
+        };
+        return Self::do_score(&mut self.large_straight, result);
     }
 
     fn score_chance(&mut self, roll: &Roll) -> Result<i32, i32> {
