@@ -121,14 +121,6 @@ pub fn large_straight(roll: &Roll) -> i32 {
     };
 }
 
-pub fn rustzee(roll: &Roll) -> i32 {
-    let counts = ValueCounts::from(roll);
-    return match counts.has_kind(5) {
-        true => 50,
-        false => 0,
-    };
-}
-
 pub fn chance(roll: &Roll) -> i32 {
     return helpers::total(roll);
 }
