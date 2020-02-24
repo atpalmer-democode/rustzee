@@ -186,7 +186,12 @@ impl ScoreCard {
     }
 
     fn score_four_of_a_kind(&mut self, roll: &Roll) -> Result<i32, i32> {
-        return Self::do_score(&mut self.four_of_a_kind, scoring::four_of_a_kind(roll));
+        let counts = scoring::ValueCounts::from(roll);
+        let result = match counts.has_kind(4) {
+            true => scoring::total(roll),
+            false => 0,
+        };
+        return Self::do_score(&mut self.four_of_a_kind, result);
     }
 
     fn score_full_house(&mut self, roll: &Roll) -> Result<i32, i32> {

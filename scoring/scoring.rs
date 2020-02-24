@@ -70,14 +70,6 @@ pub fn total(roll: &Roll) -> i32 {
     return result;
 }
 
-pub fn four_of_a_kind(roll: &Roll) -> i32 {
-    let counts = ValueCounts::from(roll);
-    return match counts.has_kind(4) {
-        true => total(roll),
-        false => 0,
-    };
-}
-
 pub fn full_house(roll: &Roll) -> i32 {
     let counts = ValueCounts::from(roll);
     let is_fullhouse = counts.has_exact(3) && counts.has_exact(2);
