@@ -80,11 +80,6 @@ mod helpers {
 
 use value_counts::ValueCounts;
 
-pub fn score_as(roll: &Roll, value: i32) -> i32 {
-    let count = roll.count_values(value);
-    return count * value;
-}
-
 pub fn four_of_a_kind(roll: &Roll) -> i32 {
     let counts = ValueCounts::from(roll);
     return match counts.has_kind(4) {
