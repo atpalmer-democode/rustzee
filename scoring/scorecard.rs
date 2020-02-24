@@ -195,7 +195,12 @@ impl ScoreCard {
     }
 
     fn score_full_house(&mut self, roll: &Roll) -> Result<i32, i32> {
-        return Self::do_score(&mut self.full_house, scoring::full_house(roll));
+        let counts = scoring::ValueCounts::from(roll);
+        let result = match counts.has_exact(3) && counts.has_exact(2) {
+            true => 25,
+            false => 0,
+        };
+        return Self::do_score(&mut self.full_house, result);
     }
 
     fn score_small_straight(&mut self, roll: &Roll) -> Result<i32, i32> {

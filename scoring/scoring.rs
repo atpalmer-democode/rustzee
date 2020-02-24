@@ -70,15 +70,6 @@ pub fn total(roll: &Roll) -> i32 {
     return result;
 }
 
-pub fn full_house(roll: &Roll) -> i32 {
-    let counts = ValueCounts::from(roll);
-    let is_fullhouse = counts.has_exact(3) && counts.has_exact(2);
-    return match is_fullhouse {
-        true => 25,
-        false => 0,
-    };
-}
-
 pub fn small_straight(roll: &Roll) -> i32 {
     let counts = ValueCounts::from(roll);
     return match counts.straight_len() == 4 {
