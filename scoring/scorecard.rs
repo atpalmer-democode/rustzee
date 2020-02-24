@@ -1,7 +1,7 @@
 use super::scoring;
 use crate::roll::Roll;
 
-#[derive(Default)]
+#[derive(Default, Clone)]
 pub struct ScoreCard {
     aces: Option<i32>,
     twos: Option<i32>,
@@ -110,6 +110,20 @@ impl ScoreCard {
         return match Self::score_func_by_option(option) {
             Some(_) => true,
             None => false,
+        };
+    }
+
+    pub fn score_roll(&self, roll: &Roll, option: i32) -> Option<ScoreCard> {
+        let mut result = (*self).clone();
+        let fopt = Self::score_func_by_option(option);
+        if fopt.is_none() {
+            return None;
+        }
+        let func = fopt.unwrap();
+        let func_result = func(&mut result, roll);
+        return match func_result {
+            Ok(_) => Some(result),
+            Err(_) => None,
         };
     }
 }

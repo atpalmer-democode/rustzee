@@ -74,8 +74,11 @@ fn main() -> Result<(), i32> {
     println!("Your choice: {}", scoring_choice);
     println!("Available? {}", scorecard.is_option_available(scoring_choice));
 
+    let new_scorecard = scorecard.score_roll(&turn.current(), scoring_choice).unwrap();
+    println!("New Score: {}", new_scorecard.total());
+
     scorecard.score_by_option(&turn.current(), scoring_choice)?;
-    println!("Score: {}", scorecard.total());
+    println!("Updated Score: {}", scorecard.total());
 
     return Ok(());
 }
