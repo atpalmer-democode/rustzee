@@ -67,23 +67,23 @@ impl ScoreCard {
 
     pub fn options(&self, roll: &Roll) -> Vec<String> {
         let items = [
-            (self.aces, 1, "Aces", scoring::score_as(roll, 1)),
-            (self.twos, 2, "Twos", scoring::score_as(roll, 2)),
-            (self.threes, 3, "Threes", scoring::score_as(roll, 3)),
-            (self.fours, 4, "Fours", scoring::score_as(roll, 4)),
-            (self.fives, 5, "Fives", scoring::score_as(roll, 5)),
-            (self.sixes, 6, "Sixes", scoring::score_as(roll, 6)),
-            (self.three_of_a_kind, 7, "3 of a Kind", scoring::three_of_a_kind(roll)),
-            (self.four_of_a_kind, 8, "4 of a Kind", scoring::four_of_a_kind(roll)),
-            (self.full_house, 9, "Full House", scoring::full_house(roll)),
-            (self.small_straight, 10, "Sm. Straight", scoring::small_straight(roll)),
-            (self.large_straight, 11, "Lg. Stright", scoring::large_straight(roll)),
-            (self.rustzee, 12, "Rustzee", scoring::rustzee(roll)),  // TODO: account for rustzee bonuses
-            (self.chance, 13, "Chance", scoring::chance(roll)),
+            (self.aces, 1, "Aces"),
+            (self.twos, 2, "Twos"),
+            (self.threes, 3, "Threes"),
+            (self.fours, 4, "Fours"),
+            (self.fives, 5, "Fives"),
+            (self.sixes, 6, "Sixes"),
+            (self.three_of_a_kind, 7, "3 of a Kind"),
+            (self.four_of_a_kind, 8, "4 of a Kind"),
+            (self.full_house, 9, "Full House"),
+            (self.small_straight, 10, "Sm. Straight"),
+            (self.large_straight, 11, "Lg. Stright"),
+            (self.rustzee, 12, "Rustzee"),
+            (self.chance, 13, "Chance"),
         ];
         return items.iter()
             .filter(|x|{x.0.is_none()})
-            .map(|x|{format!("{:>2}.) {} (points: {})", x.1, x.2, x.3)})
+            .map(|x|{format!("{:>2}.) {}", x.1, x.2)}) // TODO: add back hypothetical scoring
             .collect();
     }
 
