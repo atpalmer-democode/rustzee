@@ -65,7 +65,7 @@ impl ScoreCard {
         return self.top_total() + self.bottom_total();
     }
 
-    pub fn options(&self, roll: &Roll) -> Vec<String> {
+    pub fn options(&self, _roll: &Roll) -> Vec<String> {
         let items = [
             (self.aces, 1, "Aces"),
             (self.twos, 2, "Twos"),
