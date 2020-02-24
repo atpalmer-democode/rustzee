@@ -147,27 +147,33 @@ impl ScoreCard {
     }
 
     fn score_aces(&mut self, roll: &Roll) -> Result<i32, i32> {
-        return Self::do_score(&mut self.aces, scoring::score_as(roll, 1));
+        let result = roll.count_values(1) * 1;
+        return Self::do_score(&mut self.aces, result);
     }
 
     fn score_twos(&mut self, roll: &Roll) -> Result<i32, i32> {
-        return Self::do_score(&mut self.twos, scoring::score_as(roll, 2));
+        let result = roll.count_values(2) * 2;
+        return Self::do_score(&mut self.aces, result);
     }
 
     fn score_threes(&mut self, roll: &Roll) -> Result<i32, i32> {
-        return Self::do_score(&mut self.threes, scoring::score_as(roll, 3));
+        let result = roll.count_values(3) * 3;
+        return Self::do_score(&mut self.aces, result);
     }
 
     fn score_fours(&mut self, roll: &Roll) -> Result<i32, i32> {
-        return Self::do_score(&mut self.fours, scoring::score_as(roll, 4));
+        let result = roll.count_values(4) * 4;
+        return Self::do_score(&mut self.aces, result);
     }
 
     fn score_fives(&mut self, roll: &Roll) -> Result<i32, i32> {
-        return Self::do_score(&mut self.fives, scoring::score_as(roll, 5));
+        let result = roll.count_values(5) * 5;
+        return Self::do_score(&mut self.aces, result);
     }
 
     fn score_sixes(&mut self, roll: &Roll) -> Result<i32, i32> {
-        return Self::do_score(&mut self.sixes, scoring::score_as(roll, 6));
+        let result = roll.count_values(6) * 6;
+        return Self::do_score(&mut self.aces, result);
     }
 
     fn score_three_of_a_kind(&mut self, roll: &Roll) -> Result<i32, i32> {
