@@ -1,5 +1,6 @@
-use super::scoring;
 use crate::roll::Roll;
+use super::helpers;
+use super::value_counts::ValueCounts;
 
 #[derive(Default, Clone)]
 pub struct ScoreCard {
@@ -177,25 +178,25 @@ impl ScoreCard {
     }
 
     fn score_three_of_a_kind(&mut self, roll: &Roll) -> Result<i32, i32> {
-        let counts = scoring::ValueCounts::from(roll);
+        let counts = ValueCounts::from(roll);
         let result = match counts.has_kind(3) {
-            true => scoring::total(roll),
+            true => helpers::total(roll),
             false => 0,
         };
         return Self::do_score(&mut self.three_of_a_kind, result);
     }
 
     fn score_four_of_a_kind(&mut self, roll: &Roll) -> Result<i32, i32> {
-        let counts = scoring::ValueCounts::from(roll);
+        let counts = ValueCounts::from(roll);
         let result = match counts.has_kind(4) {
-            true => scoring::total(roll),
+            true => helpers::total(roll),
             false => 0,
         };
         return Self::do_score(&mut self.four_of_a_kind, result);
     }
 
     fn score_full_house(&mut self, roll: &Roll) -> Result<i32, i32> {
-        let counts = scoring::ValueCounts::from(roll);
+        let counts = ValueCounts::from(roll);
         let result = match counts.has_exact(3) && counts.has_exact(2) {
             true => 25,
             false => 0,
@@ -204,7 +205,7 @@ impl ScoreCard {
     }
 
     fn score_small_straight(&mut self, roll: &Roll) -> Result<i32, i32> {
-        let counts = scoring::ValueCounts::from(roll);
+        let counts = ValueCounts::from(roll);
         let result = match counts.straight_len() >= 4 {
             true => 30,
             false => 0,
@@ -213,7 +214,7 @@ impl ScoreCard {
     }
 
     fn score_large_straight(&mut self, roll: &Roll) -> Result<i32, i32> {
-        let counts = scoring::ValueCounts::from(roll);
+        let counts = ValueCounts::from(roll);
         let result = match counts.straight_len() == 5 {
             true => 40,
             false => 0,
@@ -222,7 +223,7 @@ impl ScoreCard {
     }
 
     fn score_chance(&mut self, roll: &Roll) -> Result<i32, i32> {
-        let result = scoring::total(roll);
+        let result = helpers::total(roll);
         return Self::do_score(&mut self.chance, result);
     }
 
