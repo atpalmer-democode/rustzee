@@ -70,14 +70,6 @@ pub fn total(roll: &Roll) -> i32 {
     return result;
 }
 
-pub fn small_straight(roll: &Roll) -> i32 {
-    let counts = ValueCounts::from(roll);
-    return match counts.straight_len() == 4 {
-        true => 30,
-        false => 0,
-    };
-}
-
 pub fn large_straight(roll: &Roll) -> i32 {
     let counts = ValueCounts::from(roll);
     return match counts.straight_len() == 5 {
