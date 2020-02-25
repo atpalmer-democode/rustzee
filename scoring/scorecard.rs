@@ -154,27 +154,27 @@ impl ScoreCard {
 
     fn score_twos(&mut self, roll: &Roll) -> Result<i32, i32> {
         let result = roll.count_values(2) * 2;
-        return Self::try_set(&mut self.aces, result);
+        return Self::try_set(&mut self.twos, result);
     }
 
     fn score_threes(&mut self, roll: &Roll) -> Result<i32, i32> {
         let result = roll.count_values(3) * 3;
-        return Self::try_set(&mut self.aces, result);
+        return Self::try_set(&mut self.threes, result);
     }
 
     fn score_fours(&mut self, roll: &Roll) -> Result<i32, i32> {
         let result = roll.count_values(4) * 4;
-        return Self::try_set(&mut self.aces, result);
+        return Self::try_set(&mut self.fours, result);
     }
 
     fn score_fives(&mut self, roll: &Roll) -> Result<i32, i32> {
         let result = roll.count_values(5) * 5;
-        return Self::try_set(&mut self.aces, result);
+        return Self::try_set(&mut self.fives, result);
     }
 
     fn score_sixes(&mut self, roll: &Roll) -> Result<i32, i32> {
         let result = roll.count_values(6) * 6;
-        return Self::try_set(&mut self.aces, result);
+        return Self::try_set(&mut self.sixes, result);
     }
 
     fn score_three_of_a_kind(&mut self, roll: &Roll) -> Result<i32, i32> {
