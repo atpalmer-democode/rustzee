@@ -12,9 +12,14 @@ impl ValueCounts {
         return self.counts[index];
     }
 
-    pub fn count_value(&self, value: i32) -> i32 {
+    fn count_value(&self, value: i32) -> i32 {
         let die = Die::from(value);
         return self.count(&die);
+    }
+
+    pub fn die_value_total(&self, value: i32) -> i32 {
+        let count = self.count_value(value);
+        return count * value;
     }
 
     pub fn has_exact(&self, count: i32) -> bool {

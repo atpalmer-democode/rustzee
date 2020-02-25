@@ -149,37 +149,37 @@ impl ScoreCard {
 
     fn score_aces(&mut self, roll: &Roll) -> Result<i32, i32> {
         let counts = ValueCounts::from(roll);
-        let result = counts.count_value(1) * 1;
+        let result = counts.die_value_total(1);
         return Self::try_set(&mut self.aces, result);
     }
 
     fn score_twos(&mut self, roll: &Roll) -> Result<i32, i32> {
         let counts = ValueCounts::from(roll);
-        let result = counts.count_value(2) * 2;
+        let result = counts.die_value_total(2);
         return Self::try_set(&mut self.twos, result);
     }
 
     fn score_threes(&mut self, roll: &Roll) -> Result<i32, i32> {
         let counts = ValueCounts::from(roll);
-        let result = counts.count_value(3) * 3;
+        let result = counts.die_value_total(3);
         return Self::try_set(&mut self.threes, result);
     }
 
     fn score_fours(&mut self, roll: &Roll) -> Result<i32, i32> {
         let counts = ValueCounts::from(roll);
-        let result = counts.count_value(4) * 4;
+        let result = counts.die_value_total(4);
         return Self::try_set(&mut self.fours, result);
     }
 
     fn score_fives(&mut self, roll: &Roll) -> Result<i32, i32> {
         let counts = ValueCounts::from(roll);
-        let result = counts.count_value(5) * 5;
+        let result = counts.die_value_total(5);
         return Self::try_set(&mut self.fives, result);
     }
 
     fn score_sixes(&mut self, roll: &Roll) -> Result<i32, i32> {
         let counts = ValueCounts::from(roll);
-        let result = counts.count_value(6) * 6;
+        let result = counts.die_value_total(6);
         return Self::try_set(&mut self.sixes, result);
     }
 
