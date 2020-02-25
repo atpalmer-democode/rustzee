@@ -67,6 +67,11 @@ impl ScoreCard {
     }
 
     pub fn options(&self, roll: &Roll) -> Vec<String> {
+        let rustzee = match self.rustzee {
+            None => None,
+            Some(50) => None,
+            x => x,
+        };
         let items = [
             (self.aces, 1, "Aces"),
             (self.twos, 2, "Twos"),
@@ -79,7 +84,7 @@ impl ScoreCard {
             (self.full_house, 9, "Full House"),
             (self.small_straight, 10, "Sm. Straight"),
             (self.large_straight, 11, "Lg. Stright"),
-            // (self.rustzee, 12, "Rustzee"),
+            (rustzee, 12, "Rustzee"),
             (self.chance, 13, "Chance"),
         ];
         return items.iter()
@@ -111,7 +116,7 @@ impl ScoreCard {
             9 => Some(Self::score_full_house),
             10 => Some(Self::score_small_straight),
             11 => Some(Self::score_large_straight),
-            // TODO: rustzee
+            12 => Some(Self::score_rustzee),
             13 => Some(Self::score_chance),
             _ => None,
         };
@@ -243,6 +248,18 @@ impl ScoreCard {
         return Self::try_set(&mut self.chance, result);
     }
 
-    /* TODO: rustzee and rustzee_bonus */
+    fn score_rustzee(&mut self, roll: &Roll) -> Result<i32, i32> {
+        let counts = ValueCounts::from(roll);
+        if !counts.has_kind(5) {
+            return Self::try_set(&mut self.rustzee, 0);
+        }
+        return match self.rustzee {
+            Some(50) => {
+                self.rustzee_bonus += 100;
+                return Ok(self.rustzee_bonus);
+            },
+            _ => Self::try_set(&mut self.rustzee, 50),
+        };
+    }
 }
 
