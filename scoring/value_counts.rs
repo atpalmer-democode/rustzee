@@ -6,7 +6,7 @@ pub struct ValueCounts {
 }
 
 impl ValueCounts {
-    fn count(&self, die: &Die) -> i32{
+    fn count(&self, die: &Die) -> i32 {
         let die_value = die.value() as usize;
         let index = die_value - 1;
         return self.counts[index];
