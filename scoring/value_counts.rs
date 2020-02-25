@@ -12,6 +12,11 @@ impl ValueCounts {
         return self.counts[index];
     }
 
+    pub fn count_value(&self, value: i32) -> i32 {
+        let die = Die::from(value);
+        return self.count(&die);
+    }
+
     pub fn has_exact(&self, count: i32) -> bool {
         for value in (1..7).rev() {
             let die = Die::from(value);

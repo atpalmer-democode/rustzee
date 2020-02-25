@@ -41,16 +41,6 @@ impl Roll {
     pub fn at(&self, i: usize) -> &Die {
         return &self.dice[i];
     }
-
-    pub fn count_values(&self, value: i32) -> i32 {
-        let mut result = 0;
-        for die in &self.dice {
-            if die.value() == value {
-                result += 1;
-            }
-        }
-        return result;
-    }
 }
 
 impl<'a> IntoIterator for &'a Roll {
