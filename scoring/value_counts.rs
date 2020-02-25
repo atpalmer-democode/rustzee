@@ -14,7 +14,7 @@ impl ValueCounts {
 
     pub fn has_exact(&self, count: i32) -> bool {
         for value in (1..7).rev() {
-            let die = Die::from(&value);
+            let die = Die::from(value);
             if self.count(&die) == count {
                 return true;
             };
@@ -24,7 +24,7 @@ impl ValueCounts {
 
     pub fn has_kind(&self, kind: i32) -> bool {
         for value in (1..7).rev() {
-            let die = Die::from(&value);
+            let die = Die::from(value);
             if self.count(&die) >= kind {
                 return true;
             };
@@ -36,7 +36,7 @@ impl ValueCounts {
         let mut maxlen = 0;
         let mut len = 0;
         for value in 1..7 {
-            let die = Die::from(&value);
+            let die = Die::from(value);
             len = match self.count(&die) > 0 {
                 true => len + 1,
                 false => 0,
