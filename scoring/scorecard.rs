@@ -66,7 +66,7 @@ impl ScoreCard {
         return self.top_total() + self.bottom_total();
     }
 
-    pub fn options(&self, _roll: &Roll) -> Vec<String> {
+    pub fn options(&self, roll: &Roll) -> Vec<String> {
         let items = [
             (self.aces, 1, "Aces"),
             (self.twos, 2, "Twos"),
@@ -79,13 +79,23 @@ impl ScoreCard {
             (self.full_house, 9, "Full House"),
             (self.small_straight, 10, "Sm. Straight"),
             (self.large_straight, 11, "Lg. Stright"),
-            (self.rustzee, 12, "Rustzee"),
+            // (self.rustzee, 12, "Rustzee"),
             (self.chance, 13, "Chance"),
         ];
         return items.iter()
             .filter(|x|{x.0.is_none()})
-            .map(|x|{format!("{:>2}.) {}", x.1, x.2)}) // TODO: add back hypothetical scoring
+            .map(|x|{format!("{:>2}.) {} points: {:?}", x.1, x.2, self.hypothetical_score(x.1, roll))})
             .collect();
+    }
+
+    fn hypothetical_score(&self, option: i32, roll: &Roll) -> i32 {
+        let func = Self::score_func_by_option(option).unwrap();
+        let mut clone = self.clone();
+        let result = func(&mut clone, roll);
+        if let Err(_) = result {
+            panic!();
+        }
+        return clone.total();
     }
 
     fn score_func_by_option(choice: i32) -> Option<fn(&mut ScoreCard, &Roll) -> Result<i32, i32>> {
