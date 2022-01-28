@@ -39,7 +39,7 @@ mod console {
     }
 }
 
-fn main() -> Result<(), i32> {
+fn main() {
     let mut scorecard = ScoreCard::new();
     println!("Score: {}", scorecard.total());
 
@@ -81,6 +81,4 @@ fn main() -> Result<(), i32> {
             None => eprintln!("Invalid option: \"{}\"\n", scoring_choice)
         }
     }
-
-    return Ok(());
 }
