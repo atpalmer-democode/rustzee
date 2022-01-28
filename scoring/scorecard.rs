@@ -18,6 +18,11 @@ const SCORE_OPTS: [(&str, for<'sc, 'r> fn(&'sc mut ScoreCard, &'r Roll) -> Resul
     ("Chance", ScoreCard::score_chance),
 ];
 
+fn score_func_by_option(choice: usize) -> Option<fn(&mut ScoreCard, &Roll) -> Result<i32, i32>> {
+    let opt = SCORE_OPTS.get(choice - 1)?;
+    return Some((*opt).1);
+}
+
 #[derive(Default, Clone)]
 pub struct ScoreCard {
     aces: Option<i32>,
@@ -94,13 +99,8 @@ impl ScoreCard {
             .collect();
     }
 
-    fn score_func_by_option(choice: usize) -> Option<fn(&mut ScoreCard, &Roll) -> Result<i32, i32>> {
-        let opt = SCORE_OPTS.get(choice - 1)?;
-        return Some((*opt).1);
-    }
-
     pub fn is_option_available(&self, option: usize) -> bool {
-        return match Self::score_func_by_option(option) {
+        return match score_func_by_option(option) {
             Some(_) => true,
             None => false,
         };
@@ -108,7 +108,7 @@ impl ScoreCard {
 
     pub fn score_roll(&self, roll: &Roll, option: usize) -> Option<ScoreCard> {
         let mut result = (*self).clone();
-        let fopt = Self::score_func_by_option(option);
+        let fopt = score_func_by_option(option);
         if fopt.is_none() {
             return None;
         }
@@ -132,7 +132,7 @@ impl ScoreCard {
     }
 
     pub fn score_by_option(&mut self, roll: &Roll, choice: usize) -> Result<i32, i32> {
-        let fopt = Self::score_func_by_option(choice);
+        let fopt = score_func_by_option(choice);
         return match fopt {
             Some(f) => f(self, roll),
             None => Err(0),
