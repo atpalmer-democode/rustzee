@@ -46,14 +46,14 @@ fn main() -> Result<(), i32> {
     let mut turn = TurnState::roll();
 
     while turn.has_rolls() {
-        println!("{}", &turn);
+        println!("Dice: {}", turn.current());
         println!("Rolls left: {}", turn.rolls_left());
         let roll_again = console::get_bool(format!("Roll again? [Y/N]"));
         if !roll_again {
             break;
         }
         let mut keepers: [bool; 5] = [true; 5];
-        for (i, die) in turn.die_iter().enumerate() {
+        for (i, die) in turn.current().into_iter().enumerate() {
             let prompt = format!("Keep die: {}? [Y/N]", die);
             keepers[i] = console::get_bool(prompt);
         }
@@ -62,6 +62,8 @@ fn main() -> Result<(), i32> {
         println!("Keeping: {}", keep);
         turn = turn.reroll(keep);
     }
+
+    println!("Dice: {}", turn.current());
 
     println!("Available ScoreCard options:");
     for line in scorecard.options(&turn.current()) {
