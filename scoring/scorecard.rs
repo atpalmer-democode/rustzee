@@ -84,23 +84,14 @@ impl ScoreCard {
 
     pub fn options(&self, roll: &Roll) -> Vec<String> {
         return SCORE_OPTS.iter().enumerate()
-            .filter_map(|(i, (text, func))|{
-                let score_opt = self.hypothetical_score(func, roll);
-                return match score_opt {
-                    None => None,
-                    Some(score) => Some(((i + 1), text, score))
-                };
+            .filter_map(|(i, (text, func))| {
+                let mut clone = self.clone();
+                return func(&mut clone, roll).ok().and_then(|_| {
+                    Some(((i + 1), text, clone.total()))
+                });
             })
             .map(|(opt, text, score)|{format!("{:>2}.) {} points: {:?}", opt, text, score)})
             .collect();
-    }
-
-    fn hypothetical_score(&self, func: &fn(&mut ScoreCard, &Roll) -> Result<i32, i32>, roll: &Roll) -> Option<i32> {
-        let mut clone = self.clone();
-        return match func(&mut clone, roll) {
-            Ok(_) => Some(clone.total()),
-            Err(_) => None,
-        };
     }
 
     fn score_func_by_option(choice: usize) -> Option<fn(&mut ScoreCard, &Roll) -> Result<i32, i32>> {
