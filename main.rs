@@ -26,11 +26,11 @@ mod console {
         }
     }
 
-    pub fn get_i32(prompt: String) -> i32 {
+    pub fn get_usize(prompt: String) -> usize {
         loop {
             println!("{}", prompt);
             let val: String = text_io::read!();
-            let result = val.parse::<i32>();
+            let result = val.parse::<usize>();
             match result {
                 Err(_) => continue,
                 Ok(x) => return x,
@@ -68,7 +68,7 @@ fn main() -> Result<(), i32> {
         println!("{}", line);
     }
 
-    let scoring_choice = console::get_i32(format!("Scoring choice:"));
+    let scoring_choice = console::get_usize(format!("Scoring choice:"));
     println!("Your choice: {}", scoring_choice);
     println!("Available? {}", scorecard.is_option_available(scoring_choice));
 

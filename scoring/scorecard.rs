@@ -73,7 +73,7 @@ impl ScoreCard {
             x => x,
         };
         let items = [
-            (self.aces, 1, "Aces"),
+            (self.aces, 1usize, "Aces"),
             (self.twos, 2, "Twos"),
             (self.threes, 3, "Threes"),
             (self.fours, 4, "Fours"),
@@ -93,7 +93,7 @@ impl ScoreCard {
             .collect();
     }
 
-    fn hypothetical_score(&self, option: i32, roll: &Roll) -> i32 {
+    fn hypothetical_score(&self, option: usize, roll: &Roll) -> i32 {
         let func = Self::score_func_by_option(option).unwrap();
         let mut clone = self.clone();
         let result = func(&mut clone, roll);
@@ -103,7 +103,7 @@ impl ScoreCard {
         return clone.total();
     }
 
-    fn score_func_by_option(choice: i32) -> Option<fn(&mut ScoreCard, &Roll) -> Result<i32, i32>> {
+    fn score_func_by_option(choice: usize) -> Option<fn(&mut ScoreCard, &Roll) -> Result<i32, i32>> {
         return match choice {
             1 => Some(Self::score_aces),
             2 => Some(Self::score_twos),
@@ -122,14 +122,14 @@ impl ScoreCard {
         };
     }
 
-    pub fn is_option_available(&self, option: i32) -> bool {
+    pub fn is_option_available(&self, option: usize) -> bool {
         return match Self::score_func_by_option(option) {
             Some(_) => true,
             None => false,
         };
     }
 
-    pub fn score_roll(&self, roll: &Roll, option: i32) -> Option<ScoreCard> {
+    pub fn score_roll(&self, roll: &Roll, option: usize) -> Option<ScoreCard> {
         let mut result = (*self).clone();
         let fopt = Self::score_func_by_option(option);
         if fopt.is_none() {
@@ -154,7 +154,7 @@ impl ScoreCard {
         return Ok(result);
     }
 
-    pub fn score_by_option(&mut self, roll: &Roll, choice: i32) -> Result<i32, i32> {
+    pub fn score_by_option(&mut self, roll: &Roll, choice: usize) -> Result<i32, i32> {
         let fopt = Self::score_func_by_option(choice);
         return match fopt {
             Some(f) => f(self, roll),
