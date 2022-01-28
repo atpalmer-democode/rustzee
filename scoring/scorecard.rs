@@ -2,6 +2,22 @@ use crate::roll::Roll;
 use super::helpers;
 use super::value_counts::ValueCounts;
 
+const SCORE_OPTS: [(&str, for<'sc, 'r> fn(&'sc mut ScoreCard, &'r Roll) -> Result<i32, i32>); 13] = [
+    ("Aces", ScoreCard::score_aces),
+    ("Twos", ScoreCard::score_twos),
+    ("Threes", ScoreCard::score_threes),
+    ("Fours", ScoreCard::score_fours),
+    ("Fives", ScoreCard::score_fives),
+    ("Sixes", ScoreCard::score_sixes),
+    ("3 of a Kind", ScoreCard::score_three_of_a_kind),
+    ("4 of a Kind", ScoreCard::score_four_of_a_kind),
+    ("Full House", ScoreCard::score_full_house),
+    ("Sm. Straight", ScoreCard::score_small_straight),
+    ("Lg. Stright", ScoreCard::score_large_straight),
+    ("Rustzee", ScoreCard::score_rustzee),
+    ("Chance", ScoreCard::score_chance),
+];
+
 #[derive(Default, Clone)]
 pub struct ScoreCard {
     aces: Option<i32>,
@@ -67,59 +83,29 @@ impl ScoreCard {
     }
 
     pub fn options(&self, roll: &Roll) -> Vec<String> {
-        let rustzee = match self.rustzee {
-            None => None,
-            Some(50) => None,
-            x => x,
-        };
-        let items = [
-            (self.aces, 1usize, "Aces"),
-            (self.twos, 2, "Twos"),
-            (self.threes, 3, "Threes"),
-            (self.fours, 4, "Fours"),
-            (self.fives, 5, "Fives"),
-            (self.sixes, 6, "Sixes"),
-            (self.three_of_a_kind, 7, "3 of a Kind"),
-            (self.four_of_a_kind, 8, "4 of a Kind"),
-            (self.full_house, 9, "Full House"),
-            (self.small_straight, 10, "Sm. Straight"),
-            (self.large_straight, 11, "Lg. Stright"),
-            (rustzee, 12, "Rustzee"),
-            (self.chance, 13, "Chance"),
-        ];
-        return items.iter()
-            .filter(|x|{x.0.is_none()})
-            .map(|x|{format!("{:>2}.) {} points: {:?}", x.1, x.2, self.hypothetical_score(x.1, roll))})
+        return SCORE_OPTS.iter().enumerate()
+            .filter_map(|(i, (text, func))|{
+                let score_opt = self.hypothetical_score(func, roll);
+                return match score_opt {
+                    None => None,
+                    Some(score) => Some(((i + 1), text, score))
+                };
+            })
+            .map(|(opt, text, score)|{format!("{:>2}.) {} points: {:?}", opt, text, score)})
             .collect();
     }
 
-    fn hypothetical_score(&self, option: usize, roll: &Roll) -> i32 {
-        let func = Self::score_func_by_option(option).unwrap();
+    fn hypothetical_score(&self, func: &fn(&mut ScoreCard, &Roll) -> Result<i32, i32>, roll: &Roll) -> Option<i32> {
         let mut clone = self.clone();
-        let result = func(&mut clone, roll);
-        if let Err(_) = result {
-            panic!();
-        }
-        return clone.total();
+        return match func(&mut clone, roll) {
+            Ok(_) => Some(clone.total()),
+            Err(_) => None,
+        };
     }
 
     fn score_func_by_option(choice: usize) -> Option<fn(&mut ScoreCard, &Roll) -> Result<i32, i32>> {
-        return match choice {
-            1 => Some(Self::score_aces),
-            2 => Some(Self::score_twos),
-            3 => Some(Self::score_threes),
-            4 => Some(Self::score_fours),
-            5 => Some(Self::score_fives),
-            6 => Some(Self::score_sixes),
-            7 => Some(Self::score_three_of_a_kind),
-            8 => Some(Self::score_four_of_a_kind),
-            9 => Some(Self::score_full_house),
-            10 => Some(Self::score_small_straight),
-            11 => Some(Self::score_large_straight),
-            12 => Some(Self::score_rustzee),
-            13 => Some(Self::score_chance),
-            _ => None,
-        };
+        let opt = SCORE_OPTS.get(choice - 1)?;
+        return Some((*opt).1);
     }
 
     pub fn is_option_available(&self, option: usize) -> bool {
