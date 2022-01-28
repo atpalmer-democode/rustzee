@@ -55,7 +55,7 @@ impl ScoreCard {
             self.fives,
             self.sixes,
         ];
-        return items.iter().map(|x|{x.unwrap_or(0)}).sum();
+        return items.iter().filter_map(|x| *x).sum();
     }
 
     fn top_bonus(&self) -> i32 {
@@ -80,7 +80,7 @@ impl ScoreCard {
             self.chance,
             Some(self.rustzee_bonus),
         ];
-        return items.iter().map(|x|{x.unwrap_or(0)}).sum();
+        return items.iter().filter_map(|x| *x).sum();
     }
 
     pub fn total(&self) -> i32 {
@@ -100,43 +100,33 @@ impl ScoreCard {
     }
 
     pub fn is_option_available(&self, option: usize) -> bool {
-        return match score_func_by_option(option) {
-            Some(_) => true,
-            None => false,
-        };
+        return score_func_by_option(option).is_some();
     }
 
     pub fn score_roll(&self, roll: &Roll, option: usize) -> Option<ScoreCard> {
-        let mut result = (*self).clone();
-        let fopt = score_func_by_option(option);
-        if fopt.is_none() {
-            return None;
-        }
-        let func = fopt.unwrap();
-        let func_result = func(&mut result, roll);
-        return match func_result {
-            Ok(_) => Some(result),
-            Err(_) => None,
-        };
+        let mut clone = (*self).clone();
+        let func = score_func_by_option(option)?;
+        return func(&mut clone, roll).ok().and_then(|_| Some(clone));
     }
 }
 
 /* Mutators */
 impl ScoreCard {
     fn try_set(target: &mut Option<i32>, result: i32) -> Result<i32, i32> {
-        if target.is_some() {
-            return Err(target.unwrap());
-        }
-        *target = Some(result);
-        return Ok(result);
+        return match target {
+            Some(existing_value) => Err(*existing_value),
+            None => {
+                *target = Some(result);
+                Ok(result)
+            }
+        };
     }
 
     pub fn score_by_option(&mut self, roll: &Roll, choice: usize) -> Result<i32, i32> {
-        let fopt = score_func_by_option(choice);
-        return match fopt {
+        match score_func_by_option(choice) {
             Some(f) => f(self, roll),
             None => Err(0),
-        };
+        }
     }
 
     fn score_aces(&mut self, roll: &Roll) -> Result<i32, i32> {
