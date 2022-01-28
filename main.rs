@@ -43,13 +43,11 @@ fn main() -> Result<(), i32> {
     let mut scorecard = ScoreCard::new();
     println!("Score: {}", scorecard.total());
 
-    let mut turn = TurnState::new();
-
-    turn.roll();
+    let mut turn = TurnState::roll();
 
     while turn.has_rolls() {
         println!("{}", &turn);
-        println!("Rolls left: {} of {}", turn.rolls_left(), TurnState::MAX_ROLLS);
+        println!("Rolls left: {} of {}", turn.rolls_left(), TurnState::START_ROLLS);
         let roll_again = console::get_bool(format!("Roll again? [Y/N]"));
         if !roll_again {
             break;
@@ -62,7 +60,7 @@ fn main() -> Result<(), i32> {
 
         let keep = Keep::new(keepers);
         println!("Keeping: {}", keep);
-        turn.reroll(keep);
+        turn = turn.reroll(keep);
     }
 
     println!("Available ScoreCard options:");
