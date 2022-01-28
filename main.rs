@@ -10,7 +10,7 @@ use scoring::scorecard::ScoreCard;
 mod console {
     use text_io;
 
-    pub fn get_bool(prompt: String) -> bool {
+    pub fn get_bool(prompt: &str) -> bool {
         loop {
             println!("{}", prompt);
             let val: String = text_io::read!();
@@ -26,7 +26,7 @@ mod console {
         }
     }
 
-    pub fn get_usize(prompt: String) -> usize {
+    pub fn get_usize(prompt: &str) -> usize {
         loop {
             println!("{}", prompt);
             let val: String = text_io::read!();
@@ -48,14 +48,14 @@ fn main() -> Result<(), i32> {
     while turn.has_rolls() {
         println!("Dice: {}", turn.current());
         println!("Rolls left: {}", turn.rolls_left());
-        let roll_again = console::get_bool(format!("Roll again? [Y/N]"));
+        let roll_again = console::get_bool("Roll again? [Y/N]");
         if !roll_again {
             break;
         }
         let mut keepers: [bool; 5] = [true; 5];
         for (i, die) in turn.current().into_iter().enumerate() {
             let prompt = format!("Keep die: {}? [Y/N]", die);
-            keepers[i] = console::get_bool(prompt);
+            keepers[i] = console::get_bool(&prompt);
         }
 
         let keep = Keep::new(keepers);
@@ -71,7 +71,7 @@ fn main() -> Result<(), i32> {
             println!("{}", line);
         }
 
-        let scoring_choice = console::get_usize(format!("Scoring choice:"));
+        let scoring_choice = console::get_usize("Scoring choice:");
 
         match scorecard.score_by_option(&turn.current(), scoring_choice) {
             Some(total) => {
