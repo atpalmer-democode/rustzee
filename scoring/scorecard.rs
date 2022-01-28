@@ -19,7 +19,7 @@ const SCORE_OPTS: [(&str, for<'sc, 'r> fn(&'sc mut ScoreCard, &'r Roll) -> Resul
 ];
 
 fn score_func_by_option(choice: usize) -> Option<fn(&mut ScoreCard, &Roll) -> Result<i32, i32>> {
-    let opt = SCORE_OPTS.get(choice - 1)?;
+    let opt = SCORE_OPTS.get(choice.checked_sub(1)?)?;
     return Some((*opt).1);
 }
 
@@ -98,16 +98,6 @@ impl ScoreCard {
             .map(|(opt, text, score)|{format!("{:>2}.) {} points: {:?}", opt, text, score)})
             .collect();
     }
-
-    pub fn is_option_available(&self, option: usize) -> bool {
-        return score_func_by_option(option).is_some();
-    }
-
-    pub fn score_roll(&self, roll: &Roll, option: usize) -> Option<ScoreCard> {
-        let mut clone = (*self).clone();
-        let func = score_func_by_option(option)?;
-        return func(&mut clone, roll).ok().and_then(|_| Some(clone));
-    }
 }
 
 /* Mutators */
@@ -122,11 +112,10 @@ impl ScoreCard {
         };
     }
 
-    pub fn score_by_option(&mut self, roll: &Roll, choice: usize) -> Result<i32, i32> {
-        match score_func_by_option(choice) {
-            Some(f) => f(self, roll),
-            None => Err(0),
-        }
+    pub fn score_by_option(&mut self, roll: &Roll, choice: usize) -> Option<i32> {
+        return score_func_by_option(choice)
+            .and_then(|func| func(self, roll).ok())
+            .and_then(|_| Some(self.total()));
     }
 
     fn score_aces(&mut self, roll: &Roll) -> Result<i32, i32> {

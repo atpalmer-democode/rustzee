@@ -32,7 +32,7 @@ mod console {
             let val: String = text_io::read!();
             let result = val.parse::<usize>();
             match result {
-                Err(_) => continue,
+                Err(_) => eprintln!("Invalid entry: \"{}\"", val),
                 Ok(x) => return x,
             }
         }
@@ -63,22 +63,24 @@ fn main() -> Result<(), i32> {
         turn = turn.reroll(keep);
     }
 
-    println!("Dice: {}", turn.current());
+    loop {
+        println!("Dice: {}", turn.current());
 
-    println!("Available ScoreCard options:");
-    for line in scorecard.options(&turn.current()) {
-        println!("{}", line);
+        println!("Available ScoreCard options:");
+        for line in scorecard.options(&turn.current()) {
+            println!("{}", line);
+        }
+
+        let scoring_choice = console::get_usize(format!("Scoring choice:"));
+
+        match scorecard.score_by_option(&turn.current(), scoring_choice) {
+            Some(total) => {
+                println!("Updated Score: {}", total);
+                break;
+            },
+            None => eprintln!("Invalid option: \"{}\"\n", scoring_choice)
+        }
     }
-
-    let scoring_choice = console::get_usize(format!("Scoring choice:"));
-    println!("Your choice: {}", scoring_choice);
-    println!("Available? {}", scorecard.is_option_available(scoring_choice));
-
-    let new_scorecard = scorecard.score_roll(&turn.current(), scoring_choice).unwrap();
-    println!("New Score: {}", new_scorecard.total());
-
-    scorecard.score_by_option(&turn.current(), scoring_choice)?;
-    println!("Updated Score: {}", scorecard.total());
 
     return Ok(());
 }
