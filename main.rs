@@ -67,8 +67,8 @@ fn main() {
         println!("Dice: {}", turn.current());
 
         println!("Available ScoreCard options:");
-        for line in scorecard.options(&turn.current()) {
-            println!("{}", line);
+        for (opt, text, score) in scorecard.options(&turn.current()) {
+            println!("{:>2}.) {} points: {:?}", opt, text, score);
         }
 
         let scoring_choice = console::get_usize("Scoring choice:");

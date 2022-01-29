@@ -87,16 +87,14 @@ impl ScoreCard {
         return self.top_total() + self.bottom_total();
     }
 
-    pub fn options(&self, roll: &Roll) -> Vec<String> {
+    pub fn options(&self, roll: &Roll) -> Vec<(usize, &str, i32)> {
         return SCORE_OPTS.iter().enumerate()
             .filter_map(|(i, (text, func))| {
                 let mut clone = self.clone();
                 return func(&mut clone, roll).ok().and_then(|_| {
-                    Some(((i + 1), text, clone.total()))
+                    Some(((i + 1), *text, clone.total()))
                 });
-            })
-            .map(|(opt, text, score)|{format!("{:>2}.) {} points: {:?}", opt, text, score)})
-            .collect();
+            }).collect();
     }
 }
 
