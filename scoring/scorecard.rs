@@ -17,11 +17,6 @@ const SCORE_OPTS: [(&str, for<'sc, 'r> fn(&'sc mut ScoreCard, &'r ValueCounts) -
     ("Chance", ScoreCard::score_chance),
 ];
 
-fn score_func_by_option(choice: usize) -> Option<fn(&mut ScoreCard, &ValueCounts) -> Result<i32, i32>> {
-    let opt = SCORE_OPTS.get(choice.checked_sub(1)?)?;
-    return Some((*opt).1);
-}
-
 #[derive(Default, Clone)]
 pub struct ScoreCard {
     aces: Option<i32>,
@@ -99,8 +94,10 @@ impl ScoreCard {
     pub fn score_by_option(&self, roll: &Roll, choice: usize) -> Option<ScoreCard> {
         let mut clone = self.clone();
         let counts = ValueCounts::from(roll);
-        return score_func_by_option(choice)
-            .and_then(|func| func(&mut clone, &counts).ok())
+        let index = choice.checked_sub(1)?;
+        let (_, func) = SCORE_OPTS.get(index)?;
+        return func(&mut clone, &counts)
+            .ok()
             .and_then(|_| Some(clone));
     }
 }
