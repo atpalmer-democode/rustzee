@@ -1,11 +1,13 @@
 use crate::roll::Roll;
 use crate::die::Die;
+use super::helpers;
 
-pub struct ValueCounts {
+pub struct ValueCounts<'roll> {
     counts: [i32; 6],
+    roll: &'roll Roll,
 }
 
-impl ValueCounts {
+impl<'r> ValueCounts<'r> {
     fn count(&self, die: &Die) -> i32 {
         let die_value = die.value() as usize;
         let index = die_value - 1;
@@ -58,17 +60,24 @@ impl ValueCounts {
         }
         return maxlen;
     }
+
+    pub fn total(&self) -> i32 {
+        return helpers::total(self.roll);
+    }
 }
 
-impl From<&Roll> for ValueCounts {
-    fn from(roll: &Roll) -> ValueCounts {
+impl<'roll> From<&'roll Roll> for ValueCounts<'roll> {
+    fn from(roll: &'roll Roll) -> ValueCounts<'roll> {
         let mut counts = [0; 6];
         for die in roll {
             let die_value = die.value() as usize;
             let index = die_value - 1;
             counts[index] += 1;
         }
-        return ValueCounts { counts: counts };
+        return ValueCounts {
+            counts: counts,
+            roll: roll,
+        };
     }
 }
 

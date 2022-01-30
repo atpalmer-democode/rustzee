@@ -1,5 +1,4 @@
 use crate::roll::Roll;
-use super::helpers;
 use super::value_counts::ValueCounts;
 
 const SCORE_OPTS: [(&str, for<'sc, 'r> fn(&'sc mut ScoreCard, &'r Roll) -> Result<i32, i32>); 13] = [
@@ -155,7 +154,7 @@ impl ScoreCard {
     fn score_three_of_a_kind(&mut self, roll: &Roll) -> Result<i32, i32> {
         let counts = ValueCounts::from(roll);
         let result = match counts.has_kind(3) {
-            true => helpers::total(roll),
+            true => counts.total(),
             false => 0,
         };
         return Self::try_set(&mut self.three_of_a_kind, result);
@@ -164,7 +163,7 @@ impl ScoreCard {
     fn score_four_of_a_kind(&mut self, roll: &Roll) -> Result<i32, i32> {
         let counts = ValueCounts::from(roll);
         let result = match counts.has_kind(4) {
-            true => helpers::total(roll),
+            true => counts.total(),
             false => 0,
         };
         return Self::try_set(&mut self.four_of_a_kind, result);
@@ -198,7 +197,8 @@ impl ScoreCard {
     }
 
     fn score_chance(&mut self, roll: &Roll) -> Result<i32, i32> {
-        let result = helpers::total(roll);
+        let counts = ValueCounts::from(roll);
+        let result = counts.total();
         return Self::try_set(&mut self.chance, result);
     }
 
