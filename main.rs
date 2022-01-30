@@ -39,10 +39,7 @@ mod console {
     }
 }
 
-fn main() {
-    let mut scorecard = ScoreCard::new();
-    println!("Score: {}", scorecard.total());
-
+fn play_turn() -> TurnState {
     let mut turn = TurnState::roll();
 
     while turn.has_rolls() {
@@ -63,17 +60,26 @@ fn main() {
         turn = turn.reroll(keep);
     }
 
+    return turn;
+}
+
+fn main() {
+    let mut scorecard = ScoreCard::new();
+    println!("Score: {}", scorecard.total());
+
+    let turn = play_turn();
+
     loop {
         println!("Dice: {}", turn.current());
 
         println!("Available ScoreCard options:");
-        for (opt, text, score) in scorecard.options(&turn.current()) {
+        for (opt, text, score) in scorecard.options(turn.current()) {
             println!("{:>2}.) {} points: {:?}", opt, text, score);
         }
 
         let scoring_choice = console::get_usize("Scoring choice:");
 
-        match scorecard.score_by_option(&turn.current(), scoring_choice) {
+        match scorecard.score_by_option(turn.current(), scoring_choice) {
             Some(new_scorecard) => {
                 scorecard = new_scorecard;
                 println!("Updated Score: {}", scorecard.total());
