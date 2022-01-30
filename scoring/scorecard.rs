@@ -96,6 +96,14 @@ impl ScoreCard {
                 });
             }).collect();
     }
+
+    pub fn score_by_option(&self, roll: &Roll, choice: usize) -> Option<ScoreCard> {
+        let mut clone = self.clone();
+        let counts = ValueCounts::from(roll);
+        return score_func_by_option(choice)
+            .and_then(|func| func(&mut clone, &counts).ok())
+            .and_then(|_| Some(clone));
+    }
 }
 
 /* Mutators */
@@ -108,13 +116,6 @@ impl ScoreCard {
                 Ok(result)
             }
         };
-    }
-
-    pub fn score_by_option(&mut self, roll: &Roll, choice: usize) -> Option<i32> {
-        let counts = ValueCounts::from(roll);
-        return score_func_by_option(choice)
-            .and_then(|func| func(self, &counts).ok())
-            .and_then(|_| Some(self.total()));
     }
 
     fn score_aces(&mut self, counts: &ValueCounts) -> Result<i32, i32> {

@@ -74,8 +74,9 @@ fn main() {
         let scoring_choice = console::get_usize("Scoring choice:");
 
         match scorecard.score_by_option(&turn.current(), scoring_choice) {
-            Some(total) => {
-                println!("Updated Score: {}", total);
+            Some(new_scorecard) => {
+                scorecard = new_scorecard;
+                println!("Updated Score: {}", scorecard.total());
                 break;
             },
             None => eprintln!("Invalid option: \"{}\"\n", scoring_choice)
