@@ -88,11 +88,10 @@ impl ScoreCard {
 
     pub fn options(&self, roll: &Roll) -> Vec<(usize, &str, i32)> {
         return SCORE_OPTS.iter().enumerate()
-            .filter_map(|(i, (text, func))| {
-                let mut clone = self.clone();
-                let counts = ValueCounts::from(roll);
-                return func(&mut clone, &counts).ok().and_then(|_| {
-                    Some(((i + 1), *text, clone.total()))
+            .filter_map(|(i, (text, _))| {
+                let choice: usize = i + 1;
+                return self.score_by_option(roll, choice).and_then(|card| {
+                    Some((choice, *text, card.total()))
                 });
             }).collect();
     }
