@@ -1,20 +1,39 @@
 use crate::roll::Roll;
 use super::value_counts::ValueCounts;
 
-const SCORE_OPTS: [(&str, for<'sc, 'r> fn(&'sc mut ScoreCard, &'r ValueCounts) -> Result<i32, i32>); 13] = [
-    ("Aces", ScoreCard::score_aces),
-    ("Twos", ScoreCard::score_twos),
-    ("Threes", ScoreCard::score_threes),
-    ("Fours", ScoreCard::score_fours),
-    ("Fives", ScoreCard::score_fives),
-    ("Sixes", ScoreCard::score_sixes),
-    ("3 of a Kind", ScoreCard::score_three_of_a_kind),
-    ("4 of a Kind", ScoreCard::score_four_of_a_kind),
-    ("Full House", ScoreCard::score_full_house),
-    ("Sm. Straight", ScoreCard::score_small_straight),
-    ("Lg. Stright", ScoreCard::score_large_straight),
-    ("Rustzee", ScoreCard::score_rustzee),
-    ("Chance", ScoreCard::score_chance),
+// SCORE_OPT_TEXT and SCORE_OPT_FUNC are parallel arrays with corresponding elements.
+// Index of SCORE_OPT_TEXT is used to lookup function in SCORE_OPT_FUNC.
+
+const SCORE_OPT_TEXT: [&str; 13] = [
+    "Aces",
+    "Twos",
+    "Threes",
+    "Fours",
+    "Fives",
+    "Sixes",
+    "3 of a Kind",
+    "4 of a Kind",
+    "Full House",
+    "Sm. Straight",
+    "Lg. Stright",
+    "Rustzee",
+    "Chance",
+];
+
+const SCORE_OPT_FUNC: [for<'sc, 'r> fn(&'sc mut ScoreCard, &'r ValueCounts) -> Result<i32, i32>; 13] = [
+    ScoreCard::score_aces,
+    ScoreCard::score_twos,
+    ScoreCard::score_threes,
+    ScoreCard::score_fours,
+    ScoreCard::score_fives,
+    ScoreCard::score_sixes,
+    ScoreCard::score_three_of_a_kind,
+    ScoreCard::score_four_of_a_kind,
+    ScoreCard::score_full_house,
+    ScoreCard::score_small_straight,
+    ScoreCard::score_large_straight,
+    ScoreCard::score_rustzee,
+    ScoreCard::score_chance,
 ];
 
 #[derive(Default, Clone)]
@@ -82,8 +101,8 @@ impl ScoreCard {
     }
 
     pub fn options(&self, roll: &Roll) -> Vec<(usize, &str, i32)> {
-        return SCORE_OPTS.iter().enumerate()
-            .filter_map(|(i, (text, _))| {
+        return SCORE_OPT_TEXT.iter().enumerate()
+            .filter_map(|(i, text)| {
                 let choice: usize = i + 1;
                 return self.score_by_option(roll, choice).and_then(|card| {
                     Some((choice, *text, card.total()))
@@ -95,7 +114,7 @@ impl ScoreCard {
         let mut clone = self.clone();
         let counts = ValueCounts::from(roll);
         let index = choice.checked_sub(1)?;
-        let (_, func) = SCORE_OPTS.get(index)?;
+        let func = SCORE_OPT_FUNC.get(index)?;
         return func(&mut clone, &counts)
             .ok()
             .and_then(|_| Some(clone));
