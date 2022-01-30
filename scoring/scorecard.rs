@@ -1,7 +1,7 @@
 use crate::roll::Roll;
 use super::value_counts::ValueCounts;
 
-const SCORE_OPTS: [(&str, for<'sc, 'r> fn(&'sc mut ScoreCard, &'r Roll) -> Result<i32, i32>); 13] = [
+const SCORE_OPTS: [(&str, for<'sc, 'r> fn(&'sc mut ScoreCard, &'r ValueCounts) -> Result<i32, i32>); 13] = [
     ("Aces", ScoreCard::score_aces),
     ("Twos", ScoreCard::score_twos),
     ("Threes", ScoreCard::score_threes),
@@ -17,7 +17,7 @@ const SCORE_OPTS: [(&str, for<'sc, 'r> fn(&'sc mut ScoreCard, &'r Roll) -> Resul
     ("Chance", ScoreCard::score_chance),
 ];
 
-fn score_func_by_option(choice: usize) -> Option<fn(&mut ScoreCard, &Roll) -> Result<i32, i32>> {
+fn score_func_by_option(choice: usize) -> Option<fn(&mut ScoreCard, &ValueCounts) -> Result<i32, i32>> {
     let opt = SCORE_OPTS.get(choice.checked_sub(1)?)?;
     return Some((*opt).1);
 }
@@ -90,7 +90,8 @@ impl ScoreCard {
         return SCORE_OPTS.iter().enumerate()
             .filter_map(|(i, (text, func))| {
                 let mut clone = self.clone();
-                return func(&mut clone, roll).ok().and_then(|_| {
+                let counts = ValueCounts::from(roll);
+                return func(&mut clone, &counts).ok().and_then(|_| {
                     Some(((i + 1), *text, clone.total()))
                 });
             }).collect();
@@ -110,49 +111,43 @@ impl ScoreCard {
     }
 
     pub fn score_by_option(&mut self, roll: &Roll, choice: usize) -> Option<i32> {
+        let counts = ValueCounts::from(roll);
         return score_func_by_option(choice)
-            .and_then(|func| func(self, roll).ok())
+            .and_then(|func| func(self, &counts).ok())
             .and_then(|_| Some(self.total()));
     }
 
-    fn score_aces(&mut self, roll: &Roll) -> Result<i32, i32> {
-        let counts = ValueCounts::from(roll);
+    fn score_aces(&mut self, counts: &ValueCounts) -> Result<i32, i32> {
         let result = counts.die_value_total(1);
         return Self::try_set(&mut self.aces, result);
     }
 
-    fn score_twos(&mut self, roll: &Roll) -> Result<i32, i32> {
-        let counts = ValueCounts::from(roll);
+    fn score_twos(&mut self, counts: &ValueCounts) -> Result<i32, i32> {
         let result = counts.die_value_total(2);
         return Self::try_set(&mut self.twos, result);
     }
 
-    fn score_threes(&mut self, roll: &Roll) -> Result<i32, i32> {
-        let counts = ValueCounts::from(roll);
+    fn score_threes(&mut self, counts: &ValueCounts) -> Result<i32, i32> {
         let result = counts.die_value_total(3);
         return Self::try_set(&mut self.threes, result);
     }
 
-    fn score_fours(&mut self, roll: &Roll) -> Result<i32, i32> {
-        let counts = ValueCounts::from(roll);
+    fn score_fours(&mut self, counts: &ValueCounts) -> Result<i32, i32> {
         let result = counts.die_value_total(4);
         return Self::try_set(&mut self.fours, result);
     }
 
-    fn score_fives(&mut self, roll: &Roll) -> Result<i32, i32> {
-        let counts = ValueCounts::from(roll);
+    fn score_fives(&mut self, counts: &ValueCounts) -> Result<i32, i32> {
         let result = counts.die_value_total(5);
         return Self::try_set(&mut self.fives, result);
     }
 
-    fn score_sixes(&mut self, roll: &Roll) -> Result<i32, i32> {
-        let counts = ValueCounts::from(roll);
+    fn score_sixes(&mut self, counts: &ValueCounts) -> Result<i32, i32> {
         let result = counts.die_value_total(6);
         return Self::try_set(&mut self.sixes, result);
     }
 
-    fn score_three_of_a_kind(&mut self, roll: &Roll) -> Result<i32, i32> {
-        let counts = ValueCounts::from(roll);
+    fn score_three_of_a_kind(&mut self, counts: &ValueCounts) -> Result<i32, i32> {
         let result = match counts.has_kind(3) {
             true => counts.total(),
             false => 0,
@@ -160,8 +155,7 @@ impl ScoreCard {
         return Self::try_set(&mut self.three_of_a_kind, result);
     }
 
-    fn score_four_of_a_kind(&mut self, roll: &Roll) -> Result<i32, i32> {
-        let counts = ValueCounts::from(roll);
+    fn score_four_of_a_kind(&mut self, counts: &ValueCounts) -> Result<i32, i32> {
         let result = match counts.has_kind(4) {
             true => counts.total(),
             false => 0,
@@ -169,8 +163,7 @@ impl ScoreCard {
         return Self::try_set(&mut self.four_of_a_kind, result);
     }
 
-    fn score_full_house(&mut self, roll: &Roll) -> Result<i32, i32> {
-        let counts = ValueCounts::from(roll);
+    fn score_full_house(&mut self, counts: &ValueCounts) -> Result<i32, i32> {
         let result = match counts.has_exact(3) && counts.has_exact(2) {
             true => 25,
             false => 0,
@@ -178,8 +171,7 @@ impl ScoreCard {
         return Self::try_set(&mut self.full_house, result);
     }
 
-    fn score_small_straight(&mut self, roll: &Roll) -> Result<i32, i32> {
-        let counts = ValueCounts::from(roll);
+    fn score_small_straight(&mut self, counts: &ValueCounts) -> Result<i32, i32> {
         let result = match counts.straight_len() >= 4 {
             true => 30,
             false => 0,
@@ -187,8 +179,7 @@ impl ScoreCard {
         return Self::try_set(&mut self.small_straight, result);
     }
 
-    fn score_large_straight(&mut self, roll: &Roll) -> Result<i32, i32> {
-        let counts = ValueCounts::from(roll);
+    fn score_large_straight(&mut self, counts: &ValueCounts) -> Result<i32, i32> {
         let result = match counts.straight_len() == 5 {
             true => 40,
             false => 0,
@@ -196,14 +187,12 @@ impl ScoreCard {
         return Self::try_set(&mut self.large_straight, result);
     }
 
-    fn score_chance(&mut self, roll: &Roll) -> Result<i32, i32> {
-        let counts = ValueCounts::from(roll);
+    fn score_chance(&mut self, counts: &ValueCounts) -> Result<i32, i32> {
         let result = counts.total();
         return Self::try_set(&mut self.chance, result);
     }
 
-    fn score_rustzee(&mut self, roll: &Roll) -> Result<i32, i32> {
-        let counts = ValueCounts::from(roll);
+    fn score_rustzee(&mut self, counts: &ValueCounts) -> Result<i32, i32> {
         if !counts.has_kind(5) {
             return Self::try_set(&mut self.rustzee, 0);
         }
