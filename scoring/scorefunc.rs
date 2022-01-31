@@ -16,32 +16,32 @@ fn try_set(target: &mut Option<i32>, result: i32) -> Result<i32, i32> {
 
 pub fn score_aces(card: &mut ScoreCard, roll: &Roll) -> Result<i32, i32> {
     let result = roll.die_value_total(1);
-    return try_set(&mut card.aces, result);
+    return card.aces.try_set(result);
 }
 
 pub fn score_twos(card: &mut ScoreCard, roll: &Roll) -> Result<i32, i32> {
     let result = roll.die_value_total(2);
-    return try_set(&mut card.twos, result);
+    return card.twos.try_set(result);
 }
 
 pub fn score_threes(card: &mut ScoreCard, roll: &Roll) -> Result<i32, i32> {
     let result = roll.die_value_total(3);
-    return try_set(&mut card.threes, result);
+    return card.threes.try_set(result);
 }
 
 pub fn score_fours(card: &mut ScoreCard, roll: &Roll) -> Result<i32, i32> {
     let result = roll.die_value_total(4);
-    return try_set(&mut card.fours, result);
+    return card.fours.try_set(result);
 }
 
 pub fn score_fives(card: &mut ScoreCard, roll: &Roll) -> Result<i32, i32> {
     let result = roll.die_value_total(5);
-    return try_set(&mut card.fives, result);
+    return card.fives.try_set(result);
 }
 
 pub fn score_sixes(card: &mut ScoreCard, roll: &Roll) -> Result<i32, i32> {
     let result = roll.die_value_total(6);
-    return try_set(&mut card.sixes, result);
+    return card.sixes.try_set(result);
 }
 
 pub fn score_three_of_a_kind(card: &mut ScoreCard, roll: &Roll) -> Result<i32, i32> {

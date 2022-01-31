@@ -39,13 +39,29 @@ const SCORE_OPT_FUNC: ScoreOpts<scorefunc::ScoreFunc> = [
 ];
 
 #[derive(Default, Clone)]
+pub struct ScoreCardEntry(Option<i32>);
+
+impl ScoreCardEntry {
+    pub fn get(&self) -> Option<i32> {
+        return self.0;
+    }
+
+    pub fn try_set(&mut self, val: i32) -> Result<i32, i32> {
+        return match self.0 {
+            None => { self.0 = Some(val); Ok(val) },
+            Some(existing_val) => Err(existing_val),
+        }
+    }
+}
+
+#[derive(Default, Clone)]
 pub struct ScoreCard {
-    pub(crate) aces: Option<i32>,
-    pub(crate) twos: Option<i32>,
-    pub(crate) threes: Option<i32>,
-    pub(crate) fours: Option<i32>,
-    pub(crate) fives: Option<i32>,
-    pub(crate) sixes: Option<i32>,
+    pub(crate) aces: ScoreCardEntry,
+    pub(crate) twos: ScoreCardEntry,
+    pub(crate) threes: ScoreCardEntry,
+    pub(crate) fours: ScoreCardEntry,
+    pub(crate) fives: ScoreCardEntry,
+    pub(crate) sixes: ScoreCardEntry,
     pub(crate) three_of_a_kind: Option<i32>,
     pub(crate) four_of_a_kind: Option<i32>,
     pub(crate) full_house: Option<i32>,
@@ -63,12 +79,12 @@ impl ScoreCard {
 
     fn top_subtotal(&self) -> i32 {
         let items = [
-            self.aces,
-            self.twos,
-            self.threes,
-            self.fours,
-            self.fives,
-            self.sixes,
+            self.aces.get(),
+            self.twos.get(),
+            self.threes.get(),
+            self.fours.get(),
+            self.fives.get(),
+            self.sixes.get(),
         ];
         return items.iter().filter_map(|x| *x).sum();
     }
