@@ -4,16 +4,6 @@ use super::scorecard::ScoreCard;
 
 pub type ScoreFunc = for<'sc, 'r> fn(&'sc mut ScoreCard, &'r Roll) -> Result<i32, i32>;
 
-fn try_set(target: &mut Option<i32>, result: i32) -> Result<i32, i32> {
-    return match target {
-        Some(existing_value) => Err(*existing_value),
-        None => {
-            *target = Some(result);
-            Ok(result)
-        }
-    };
-}
-
 pub fn score_aces(card: &mut ScoreCard, roll: &Roll) -> Result<i32, i32> {
     let result = roll.die_value_total(1);
     return card.aces.try_set(result);
@@ -49,7 +39,7 @@ pub fn score_three_of_a_kind(card: &mut ScoreCard, roll: &Roll) -> Result<i32, i
         true => roll.total(),
         false => 0,
     };
-    return try_set(&mut card.three_of_a_kind, result);
+    return card.three_of_a_kind.try_set(result);
 }
 
 pub fn score_four_of_a_kind(card: &mut ScoreCard, roll: &Roll) -> Result<i32, i32> {
@@ -57,7 +47,7 @@ pub fn score_four_of_a_kind(card: &mut ScoreCard, roll: &Roll) -> Result<i32, i3
         true => roll.total(),
         false => 0,
     };
-    return try_set(&mut card.four_of_a_kind, result);
+    return card.four_of_a_kind.try_set(result);
 }
 
 pub fn score_full_house(card: &mut ScoreCard, roll: &Roll) -> Result<i32, i32> {
@@ -65,7 +55,7 @@ pub fn score_full_house(card: &mut ScoreCard, roll: &Roll) -> Result<i32, i32> {
         true => 25,
         false => 0,
     };
-    return try_set(&mut card.full_house, result);
+    return card.full_house.try_set(result);
 }
 
 pub fn score_small_straight(card: &mut ScoreCard, roll: &Roll) -> Result<i32, i32> {
@@ -73,7 +63,7 @@ pub fn score_small_straight(card: &mut ScoreCard, roll: &Roll) -> Result<i32, i3
         true => 30,
         false => 0,
     };
-    return try_set(&mut card.small_straight, result);
+    return card.small_straight.try_set(result);
 }
 
 pub fn score_large_straight(card: &mut ScoreCard, roll: &Roll) -> Result<i32, i32> {
@@ -81,24 +71,24 @@ pub fn score_large_straight(card: &mut ScoreCard, roll: &Roll) -> Result<i32, i3
         true => 40,
         false => 0,
     };
-    return try_set(&mut card.large_straight, result);
+    return card.large_straight.try_set(result);
 }
 
 pub fn score_chance(card: &mut ScoreCard, roll: &Roll) -> Result<i32, i32> {
     let result = roll.total();
-    return try_set(&mut card.chance, result);
+    return card.chance.try_set(result);
 }
 
 pub fn score_rustzee(card: &mut ScoreCard, roll: &Roll) -> Result<i32, i32> {
     if !roll.has_kind(5) {
-        return try_set(&mut card.rustzee, 0);
+        return card.rustzee.try_set(0);
     }
-    return match card.rustzee {
+    return match card.rustzee.get() {
         Some(50) => {
             card.rustzee_bonus += 100;
             return Ok(card.rustzee_bonus);
         },
-        _ => try_set(&mut card.rustzee, 50),
+        _ => card.rustzee.try_set(50),
     };
 }
 

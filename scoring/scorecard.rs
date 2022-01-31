@@ -62,13 +62,13 @@ pub struct ScoreCard {
     pub(crate) fours: ScoreCardEntry,
     pub(crate) fives: ScoreCardEntry,
     pub(crate) sixes: ScoreCardEntry,
-    pub(crate) three_of_a_kind: Option<i32>,
-    pub(crate) four_of_a_kind: Option<i32>,
-    pub(crate) full_house: Option<i32>,
-    pub(crate) small_straight: Option<i32>,
-    pub(crate) large_straight: Option<i32>,
-    pub(crate) rustzee: Option<i32>,
-    pub(crate) chance: Option<i32>,
+    pub(crate) three_of_a_kind: ScoreCardEntry,
+    pub(crate) four_of_a_kind: ScoreCardEntry,
+    pub(crate) full_house: ScoreCardEntry,
+    pub(crate) small_straight: ScoreCardEntry,
+    pub(crate) large_straight: ScoreCardEntry,
+    pub(crate) rustzee: ScoreCardEntry,
+    pub(crate) chance: ScoreCardEntry,
     pub(crate) rustzee_bonus: i32,
 }
 
@@ -102,13 +102,13 @@ impl ScoreCard {
 
     fn bottom_total(&self) -> i32 {
         let items = [
-            self.three_of_a_kind,
-            self.four_of_a_kind,
-            self.full_house,
-            self.small_straight,
-            self.large_straight,
-            self.rustzee,
-            self.chance,
+            self.three_of_a_kind.get(),
+            self.four_of_a_kind.get(),
+            self.full_house.get(),
+            self.small_straight.get(),
+            self.large_straight.get(),
+            self.rustzee.get(),
+            self.chance.get(),
             Some(self.rustzee_bonus),
         ];
         return items.iter().filter_map(|x| *x).sum();
