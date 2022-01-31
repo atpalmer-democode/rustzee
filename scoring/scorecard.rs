@@ -4,7 +4,9 @@ use super::value_counts::ValueCounts;
 // SCORE_OPT_TEXT and SCORE_OPT_FUNC are parallel arrays with corresponding elements.
 // Index of SCORE_OPT_TEXT is used to lookup function in SCORE_OPT_FUNC.
 
-const SCORE_OPT_TEXT: [&str; 13] = [
+type ScoreOpts<T> = [T; 13];
+
+const SCORE_OPT_TEXT: ScoreOpts<&str> = [
     "Aces",
     "Twos",
     "Threes",
@@ -20,7 +22,9 @@ const SCORE_OPT_TEXT: [&str; 13] = [
     "Chance",
 ];
 
-const SCORE_OPT_FUNC: [for<'sc, 'r> fn(&'sc mut ScoreCard, &'r ValueCounts) -> Result<i32, i32>; 13] = [
+type ScoreFunc = for<'sc, 'r> fn(&'sc mut ScoreCard, &'r ValueCounts) -> Result<i32, i32>;
+
+const SCORE_OPT_FUNC: ScoreOpts<ScoreFunc> = [
     ScoreCard::score_aces,
     ScoreCard::score_twos,
     ScoreCard::score_threes,
