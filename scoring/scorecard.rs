@@ -1,5 +1,6 @@
 use crate::roll::Roll;
 use super::value_counts::ValueCounts;
+use super::scorefunc;
 
 // SCORE_OPT_TEXT and SCORE_OPT_FUNC are parallel arrays with corresponding elements.
 // Index of SCORE_OPT_TEXT is used to lookup function in SCORE_OPT_FUNC.
@@ -22,40 +23,38 @@ const SCORE_OPT_TEXT: ScoreOpts<&str> = [
     "Chance",
 ];
 
-type ScoreFunc = for<'sc, 'r> fn(&'sc mut ScoreCard, &'r ValueCounts) -> Result<i32, i32>;
-
-const SCORE_OPT_FUNC: ScoreOpts<ScoreFunc> = [
-    ScoreCard::score_aces,
-    ScoreCard::score_twos,
-    ScoreCard::score_threes,
-    ScoreCard::score_fours,
-    ScoreCard::score_fives,
-    ScoreCard::score_sixes,
-    ScoreCard::score_three_of_a_kind,
-    ScoreCard::score_four_of_a_kind,
-    ScoreCard::score_full_house,
-    ScoreCard::score_small_straight,
-    ScoreCard::score_large_straight,
-    ScoreCard::score_rustzee,
-    ScoreCard::score_chance,
+const SCORE_OPT_FUNC: ScoreOpts<scorefunc::ScoreFunc> = [
+    scorefunc::score_aces,
+    scorefunc::score_twos,
+    scorefunc::score_threes,
+    scorefunc::score_fours,
+    scorefunc::score_fives,
+    scorefunc::score_sixes,
+    scorefunc::score_three_of_a_kind,
+    scorefunc::score_four_of_a_kind,
+    scorefunc::score_full_house,
+    scorefunc::score_small_straight,
+    scorefunc::score_large_straight,
+    scorefunc::score_rustzee,
+    scorefunc::score_chance,
 ];
 
 #[derive(Default, Clone)]
 pub struct ScoreCard {
-    aces: Option<i32>,
-    twos: Option<i32>,
-    threes: Option<i32>,
-    fours: Option<i32>,
-    fives: Option<i32>,
-    sixes: Option<i32>,
-    three_of_a_kind: Option<i32>,
-    four_of_a_kind: Option<i32>,
-    full_house: Option<i32>,
-    small_straight: Option<i32>,
-    large_straight: Option<i32>,
-    rustzee: Option<i32>,
-    chance: Option<i32>,
-    rustzee_bonus: i32,
+    pub(crate) aces: Option<i32>,
+    pub(crate) twos: Option<i32>,
+    pub(crate) threes: Option<i32>,
+    pub(crate) fours: Option<i32>,
+    pub(crate) fives: Option<i32>,
+    pub(crate) sixes: Option<i32>,
+    pub(crate) three_of_a_kind: Option<i32>,
+    pub(crate) four_of_a_kind: Option<i32>,
+    pub(crate) full_house: Option<i32>,
+    pub(crate) small_straight: Option<i32>,
+    pub(crate) large_straight: Option<i32>,
+    pub(crate) rustzee: Option<i32>,
+    pub(crate) chance: Option<i32>,
+    pub(crate) rustzee_bonus: i32,
 }
 
 impl ScoreCard {
@@ -123,107 +122,6 @@ impl ScoreCard {
     pub fn score_by_option(&mut self, roll: &Roll, choice: usize) -> Option<i32> {
         let index = choice.checked_sub(1)?;
         return self.score_by_func_index(roll, index);
-    }
-}
-
-/* Mutators */
-impl ScoreCard {
-    fn try_set(target: &mut Option<i32>, result: i32) -> Result<i32, i32> {
-        return match target {
-            Some(existing_value) => Err(*existing_value),
-            None => {
-                *target = Some(result);
-                Ok(result)
-            }
-        };
-    }
-
-    fn score_aces(&mut self, counts: &ValueCounts) -> Result<i32, i32> {
-        let result = counts.die_value_total(1);
-        return Self::try_set(&mut self.aces, result);
-    }
-
-    fn score_twos(&mut self, counts: &ValueCounts) -> Result<i32, i32> {
-        let result = counts.die_value_total(2);
-        return Self::try_set(&mut self.twos, result);
-    }
-
-    fn score_threes(&mut self, counts: &ValueCounts) -> Result<i32, i32> {
-        let result = counts.die_value_total(3);
-        return Self::try_set(&mut self.threes, result);
-    }
-
-    fn score_fours(&mut self, counts: &ValueCounts) -> Result<i32, i32> {
-        let result = counts.die_value_total(4);
-        return Self::try_set(&mut self.fours, result);
-    }
-
-    fn score_fives(&mut self, counts: &ValueCounts) -> Result<i32, i32> {
-        let result = counts.die_value_total(5);
-        return Self::try_set(&mut self.fives, result);
-    }
-
-    fn score_sixes(&mut self, counts: &ValueCounts) -> Result<i32, i32> {
-        let result = counts.die_value_total(6);
-        return Self::try_set(&mut self.sixes, result);
-    }
-
-    fn score_three_of_a_kind(&mut self, counts: &ValueCounts) -> Result<i32, i32> {
-        let result = match counts.has_kind(3) {
-            true => counts.total(),
-            false => 0,
-        };
-        return Self::try_set(&mut self.three_of_a_kind, result);
-    }
-
-    fn score_four_of_a_kind(&mut self, counts: &ValueCounts) -> Result<i32, i32> {
-        let result = match counts.has_kind(4) {
-            true => counts.total(),
-            false => 0,
-        };
-        return Self::try_set(&mut self.four_of_a_kind, result);
-    }
-
-    fn score_full_house(&mut self, counts: &ValueCounts) -> Result<i32, i32> {
-        let result = match counts.has_exact(3) && counts.has_exact(2) {
-            true => 25,
-            false => 0,
-        };
-        return Self::try_set(&mut self.full_house, result);
-    }
-
-    fn score_small_straight(&mut self, counts: &ValueCounts) -> Result<i32, i32> {
-        let result = match counts.straight_len() >= 4 {
-            true => 30,
-            false => 0,
-        };
-        return Self::try_set(&mut self.small_straight, result);
-    }
-
-    fn score_large_straight(&mut self, counts: &ValueCounts) -> Result<i32, i32> {
-        let result = match counts.straight_len() == 5 {
-            true => 40,
-            false => 0,
-        };
-        return Self::try_set(&mut self.large_straight, result);
-    }
-
-    fn score_chance(&mut self, counts: &ValueCounts) -> Result<i32, i32> {
-        let result = counts.total();
-        return Self::try_set(&mut self.chance, result);
-    }
-
-    fn score_rustzee(&mut self, counts: &ValueCounts) -> Result<i32, i32> {
-        if !counts.has_kind(5) {
-            return Self::try_set(&mut self.rustzee, 0);
-        }
-        return match self.rustzee {
-            Some(50) => {
-                self.rustzee_bonus += 100;
-                return Ok(self.rustzee_bonus);
-            },
-            _ => Self::try_set(&mut self.rustzee, 50),
-        };
     }
 }
 
