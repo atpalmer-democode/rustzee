@@ -100,24 +100,22 @@ impl ScoreCard {
         return self.top_total() + self.bottom_total();
     }
 
-    pub fn options(&self, roll: &Roll) -> Vec<(usize, &str, i32)> {
+    pub fn options(&self, roll: &Roll) -> Vec<(usize, &str, i32, i32)> {
         return SCORE_OPT_TEXT.iter().enumerate()
             .filter_map(|(i, text)| {
+                let mut clone = self.clone();
                 let choice: usize = i + 1;
-                return self.score_by_option(roll, choice).and_then(|card| {
-                    Some((choice, *text, card.total()))
+                return clone.score_by_option(roll, choice).and_then(|value| {
+                    Some((choice, *text, value, clone.total()))
                 });
             }).collect();
     }
 
-    pub fn score_by_option(&self, roll: &Roll, choice: usize) -> Option<ScoreCard> {
-        let mut clone = self.clone();
+    pub fn score_by_option(&mut self, roll: &Roll, choice: usize) -> Option<i32> {
         let counts = ValueCounts::from(roll);
         let index = choice.checked_sub(1)?;
         let func = SCORE_OPT_FUNC.get(index)?;
-        return func(&mut clone, &counts)
-            .ok()
-            .and_then(|_| Some(clone));
+        return func(self, &counts).ok();
     }
 }
 

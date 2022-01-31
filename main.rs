@@ -3,7 +3,7 @@ mod roll;
 mod scoring;
 mod turn;
 
-use roll::Keep;
+use roll::{Roll, Keep};
 use turn::TurnState;
 use scoring::scorecard::ScoreCard;
 
@@ -63,29 +63,38 @@ fn play_turn() -> TurnState {
     return turn;
 }
 
+fn score_turn(scorecard: &mut ScoreCard, roll: &Roll) -> usize {
+    loop {
+        println!("Dice: {}", roll);
+
+        println!("Available ScoreCard options:");
+        let options = scorecard.options(roll);
+        for (opt, text, score, total) in &options {
+            println!("{:>2}.) {:<14} points: {:3} [total: {:3}]", opt, text, score, total);
+        }
+        let opt_count = options.len();
+
+        let scoring_choice = console::get_usize("Scoring choice:");
+
+        if let None = scorecard.score_by_option(roll, scoring_choice) {
+            eprintln!("Invalid option: \"{}\"\n", scoring_choice);
+            continue;
+        };
+
+        println!("Updated Score: {}", scorecard.total());
+        return opt_count - 1;
+    }
+}
+
 fn main() {
     let mut scorecard = ScoreCard::new();
     println!("Score: {}", scorecard.total());
 
-    let turn = play_turn();
-
     loop {
-        println!("Dice: {}", turn.current());
-
-        println!("Available ScoreCard options:");
-        for (opt, text, score) in scorecard.options(turn.current()) {
-            println!("{:>2}.) {} points: {:?}", opt, text, score);
-        }
-
-        let scoring_choice = console::get_usize("Scoring choice:");
-
-        match scorecard.score_by_option(turn.current(), scoring_choice) {
-            Some(new_scorecard) => {
-                scorecard = new_scorecard;
-                println!("Updated Score: {}", scorecard.total());
-                break;
-            },
-            None => eprintln!("Invalid option: \"{}\"\n", scoring_choice)
+        let turn = play_turn();
+        let turns_left = score_turn(&mut scorecard, turn.current());
+        if turns_left == 0 {
+            break;
         }
     }
 }
