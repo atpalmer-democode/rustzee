@@ -1,12 +1,25 @@
-use crate::roll::Roll;
 use crate::die::Die;
 
-pub struct ValueCounts<'roll> {
+pub struct ValueCounts {
     counts: [i32; 6],
-    roll: &'roll Roll,
+    total: i32,
 }
 
-impl<'r> ValueCounts<'r> {
+impl ValueCounts {
+    pub fn new(dice: &[Die]) -> ValueCounts {
+        let mut counts = [0; 6];
+        let mut total = 0;
+        for die in dice {
+            let index = (die.value() as usize) - 1;
+            counts[index] += 1;
+            total += die.value();
+        }
+        return ValueCounts {
+            counts: counts,
+            total: total,
+        };
+    }
+
     fn count(&self, die: &Die) -> i32 {
         let die_value = die.value() as usize;
         let index = die_value - 1;
@@ -61,24 +74,7 @@ impl<'r> ValueCounts<'r> {
     }
 
     pub fn total(&self) -> i32 {
-        return self.roll.into_iter()
-            .map(|die| die.value())
-            .sum();
-    }
-}
-
-impl<'roll> From<&'roll Roll> for ValueCounts<'roll> {
-    fn from(roll: &'roll Roll) -> ValueCounts<'roll> {
-        let mut counts = [0; 6];
-        for die in roll {
-            let die_value = die.value() as usize;
-            let index = die_value - 1;
-            counts[index] += 1;
-        }
-        return ValueCounts {
-            counts: counts,
-            roll: roll,
-        };
+        return self.total;
     }
 }
 

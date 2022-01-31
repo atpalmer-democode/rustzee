@@ -1,5 +1,4 @@
 use crate::roll::Roll;
-use super::value_counts::ValueCounts;
 use super::scorefunc;
 
 // SCORE_OPT_TEXT and SCORE_OPT_FUNC are parallel arrays with corresponding elements.
@@ -114,9 +113,8 @@ impl ScoreCard {
     }
 
     fn score_by_func_index(&mut self, roll: &Roll, index: usize) -> Option<i32> {
-        let counts = ValueCounts::from(roll);
         let func = SCORE_OPT_FUNC.get(index)?;
-        return func(self, &counts).ok();
+        return func(self, &roll).ok();
     }
 
     pub fn score_by_option(&mut self, roll: &Roll, choice: usize) -> Option<i32> {

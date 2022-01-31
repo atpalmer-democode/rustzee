@@ -1,8 +1,8 @@
+use crate::Roll;
 use super::scorecard::ScoreCard;
-use super::value_counts::ValueCounts;
 
 
-pub type ScoreFunc = for<'sc, 'r> fn(&'sc mut ScoreCard, &'r ValueCounts) -> Result<i32, i32>;
+pub type ScoreFunc = for<'sc, 'r> fn(&'sc mut ScoreCard, &'r Roll) -> Result<i32, i32>;
 
 fn try_set(target: &mut Option<i32>, result: i32) -> Result<i32, i32> {
     return match target {
@@ -14,83 +14,83 @@ fn try_set(target: &mut Option<i32>, result: i32) -> Result<i32, i32> {
     };
 }
 
-pub fn score_aces(card: &mut ScoreCard, counts: &ValueCounts) -> Result<i32, i32> {
-    let result = counts.die_value_total(1);
+pub fn score_aces(card: &mut ScoreCard, roll: &Roll) -> Result<i32, i32> {
+    let result = roll.die_value_total(1);
     return try_set(&mut card.aces, result);
 }
 
-pub fn score_twos(card: &mut ScoreCard, counts: &ValueCounts) -> Result<i32, i32> {
-    let result = counts.die_value_total(2);
+pub fn score_twos(card: &mut ScoreCard, roll: &Roll) -> Result<i32, i32> {
+    let result = roll.die_value_total(2);
     return try_set(&mut card.twos, result);
 }
 
-pub fn score_threes(card: &mut ScoreCard, counts: &ValueCounts) -> Result<i32, i32> {
-    let result = counts.die_value_total(3);
+pub fn score_threes(card: &mut ScoreCard, roll: &Roll) -> Result<i32, i32> {
+    let result = roll.die_value_total(3);
     return try_set(&mut card.threes, result);
 }
 
-pub fn score_fours(card: &mut ScoreCard, counts: &ValueCounts) -> Result<i32, i32> {
-    let result = counts.die_value_total(4);
+pub fn score_fours(card: &mut ScoreCard, roll: &Roll) -> Result<i32, i32> {
+    let result = roll.die_value_total(4);
     return try_set(&mut card.fours, result);
 }
 
-pub fn score_fives(card: &mut ScoreCard, counts: &ValueCounts) -> Result<i32, i32> {
-    let result = counts.die_value_total(5);
+pub fn score_fives(card: &mut ScoreCard, roll: &Roll) -> Result<i32, i32> {
+    let result = roll.die_value_total(5);
     return try_set(&mut card.fives, result);
 }
 
-pub fn score_sixes(card: &mut ScoreCard, counts: &ValueCounts) -> Result<i32, i32> {
-    let result = counts.die_value_total(6);
+pub fn score_sixes(card: &mut ScoreCard, roll: &Roll) -> Result<i32, i32> {
+    let result = roll.die_value_total(6);
     return try_set(&mut card.sixes, result);
 }
 
-pub fn score_three_of_a_kind(card: &mut ScoreCard, counts: &ValueCounts) -> Result<i32, i32> {
-    let result = match counts.has_kind(3) {
-        true => counts.total(),
+pub fn score_three_of_a_kind(card: &mut ScoreCard, roll: &Roll) -> Result<i32, i32> {
+    let result = match roll.has_kind(3) {
+        true => roll.total(),
         false => 0,
     };
     return try_set(&mut card.three_of_a_kind, result);
 }
 
-pub fn score_four_of_a_kind(card: &mut ScoreCard, counts: &ValueCounts) -> Result<i32, i32> {
-    let result = match counts.has_kind(4) {
-        true => counts.total(),
+pub fn score_four_of_a_kind(card: &mut ScoreCard, roll: &Roll) -> Result<i32, i32> {
+    let result = match roll.has_kind(4) {
+        true => roll.total(),
         false => 0,
     };
     return try_set(&mut card.four_of_a_kind, result);
 }
 
-pub fn score_full_house(card: &mut ScoreCard, counts: &ValueCounts) -> Result<i32, i32> {
-    let result = match counts.has_exact(3) && counts.has_exact(2) {
+pub fn score_full_house(card: &mut ScoreCard, roll: &Roll) -> Result<i32, i32> {
+    let result = match roll.has_exact(3) && roll.has_exact(2) {
         true => 25,
         false => 0,
     };
     return try_set(&mut card.full_house, result);
 }
 
-pub fn score_small_straight(card: &mut ScoreCard, counts: &ValueCounts) -> Result<i32, i32> {
-    let result = match counts.straight_len() >= 4 {
+pub fn score_small_straight(card: &mut ScoreCard, roll: &Roll) -> Result<i32, i32> {
+    let result = match roll.straight_len() >= 4 {
         true => 30,
         false => 0,
     };
     return try_set(&mut card.small_straight, result);
 }
 
-pub fn score_large_straight(card: &mut ScoreCard, counts: &ValueCounts) -> Result<i32, i32> {
-    let result = match counts.straight_len() == 5 {
+pub fn score_large_straight(card: &mut ScoreCard, roll: &Roll) -> Result<i32, i32> {
+    let result = match roll.straight_len() == 5 {
         true => 40,
         false => 0,
     };
     return try_set(&mut card.large_straight, result);
 }
 
-pub fn score_chance(card: &mut ScoreCard, counts: &ValueCounts) -> Result<i32, i32> {
-    let result = counts.total();
+pub fn score_chance(card: &mut ScoreCard, roll: &Roll) -> Result<i32, i32> {
+    let result = roll.total();
     return try_set(&mut card.chance, result);
 }
 
-pub fn score_rustzee(card: &mut ScoreCard, counts: &ValueCounts) -> Result<i32, i32> {
-    if !counts.has_kind(5) {
+pub fn score_rustzee(card: &mut ScoreCard, roll: &Roll) -> Result<i32, i32> {
+    if !roll.has_kind(5) {
         return try_set(&mut card.rustzee, 0);
     }
     return match card.rustzee {

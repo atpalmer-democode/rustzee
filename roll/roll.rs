@@ -1,14 +1,20 @@
 use std::fmt::{Display, Formatter, Result};
 use crate::die::Die;
 use super::keep::Keep;
+use super::value_counts::ValueCounts;
 
 pub struct Roll {
     dice: [Die; 5],
+    counts: ValueCounts,
 }
 
 impl From<[Die; 5]> for Roll {
     fn from(value: [Die; 5]) -> Roll {
-        return Roll { dice: value };
+        let counts = ValueCounts::new(&value);
+        return Roll {
+            dice: value,
+            counts: counts,
+        };
     }
 }
 
@@ -40,6 +46,26 @@ impl Roll {
 
     pub fn at(&self, i: usize) -> &Die {
         return &self.dice[i];
+    }
+
+    pub fn die_value_total(&self, value: i32) -> i32 {
+        return self.counts.die_value_total(value);
+    }
+
+    pub fn has_exact(&self, kind: i32) -> bool {
+        return self.counts.has_exact(kind);
+    }
+
+    pub fn has_kind(&self, kind: i32) -> bool {
+        return self.counts.has_kind(kind);
+    }
+
+    pub fn straight_len(&self) -> i32 {
+        return self.counts.straight_len();
+    }
+
+    pub fn total(&self) -> i32 {
+        return self.counts.total();
     }
 }
 
