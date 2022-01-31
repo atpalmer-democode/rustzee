@@ -1,6 +1,5 @@
 use crate::roll::Roll;
 use crate::die::Die;
-use super::helpers;
 
 pub struct ValueCounts<'roll> {
     counts: [i32; 6],
@@ -62,7 +61,9 @@ impl<'r> ValueCounts<'r> {
     }
 
     pub fn total(&self) -> i32 {
-        return helpers::total(self.roll);
+        return self.roll.into_iter()
+            .map(|die| die.value())
+            .sum();
     }
 }
 
