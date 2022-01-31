@@ -104,18 +104,21 @@ impl ScoreCard {
         return SCORE_OPT_TEXT.iter().enumerate()
             .filter_map(|(i, text)| {
                 let mut clone = self.clone();
-                let choice: usize = i + 1;
-                return clone.score_by_option(roll, choice).and_then(|value| {
-                    Some((choice, *text, value, clone.total()))
+                return clone.score_by_func_index(roll, i).and_then(|value| {
+                    Some((i + 1, *text, value, clone.total()))
                 });
             }).collect();
     }
 
-    pub fn score_by_option(&mut self, roll: &Roll, choice: usize) -> Option<i32> {
+    fn score_by_func_index(&mut self, roll: &Roll, index: usize) -> Option<i32> {
         let counts = ValueCounts::from(roll);
-        let index = choice.checked_sub(1)?;
         let func = SCORE_OPT_FUNC.get(index)?;
         return func(self, &counts).ok();
+    }
+
+    pub fn score_by_option(&mut self, roll: &Roll, choice: usize) -> Option<i32> {
+        let index = choice.checked_sub(1)?;
+        return self.score_by_func_index(roll, index);
     }
 }
 
