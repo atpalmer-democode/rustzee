@@ -9,10 +9,12 @@ use scoring::scorecard::ScoreCard;
 
 mod console {
     use text_io;
+    use std::io::Write;
 
     pub fn get_bool(prompt: &str) -> bool {
         loop {
-            println!("{}", prompt);
+            print!("{} ", prompt);
+            std::io::stdout().flush().unwrap();
             let val: String = text_io::read!();
             let result = match &*val {
                 "Y" | "y" => Some(true),
@@ -28,7 +30,8 @@ mod console {
 
     pub fn get_usize(prompt: &str) -> usize {
         loop {
-            println!("{}", prompt);
+            print!("{} ", prompt);
+            std::io::stdout().flush().unwrap();
             let val: String = text_io::read!();
             let result = val.parse::<usize>();
             match result {
@@ -51,12 +54,12 @@ fn play_turn() -> TurnState {
         }
         let mut keepers: [bool; 5] = [true; 5];
         for (i, die) in turn.current().into_iter().enumerate() {
-            let prompt = format!("Keep die: {}? [Y/N]", die);
+            let prompt = format!("Keep die #{}, showing: <{}>? [Y/N]", i + 1, die);
             keepers[i] = console::get_bool(&prompt);
         }
 
         let keep = Keep::new(keepers);
-        println!("Keeping: {}", keep);
+        println!("{}", keep);
         turn = turn.reroll(keep);
     }
 

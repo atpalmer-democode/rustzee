@@ -32,11 +32,16 @@ impl Keep {
 impl Display for Keep {
     fn fmt(&self, f: &mut Formatter) -> Result {
         let indexes = self.keeping();
-        writeln!(f, "Keeping {}: [", indexes.len())?;
-        for i in indexes {
-            writeln!(f, "  {},", i)?;
+        write!(f, "Keeping {}: ", indexes.len())?;
+        if indexes.len() == 0 {
+            return writeln!(f, "[ None ]");
         }
-        return writeln!(f, "]");
+        let mut iter = indexes.into_iter();
+        write!(f, "[ Die #{}", iter.next().unwrap() + 1)?;
+        for i in iter {
+            write!(f, ", #{}", i + 1)?;
+        }
+        return writeln!(f, " ]");
     }
 }
 
