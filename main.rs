@@ -71,7 +71,7 @@ fn score_turn(scorecard: &mut ScoreCard, roll: &Roll) -> usize {
         println!("Dice: {}", roll);
 
         println!("Available ScoreCard options:");
-        let options = scorecard.options(roll);
+        let options = scorecard.get_options(roll);
         for (opt, text, score, total) in &options {
             println!("{:>2}.) {:<14} points: {:3} [total: {:3}]", opt, text, score, total);
         }

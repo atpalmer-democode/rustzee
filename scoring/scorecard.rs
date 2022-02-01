@@ -26,13 +26,6 @@ impl ScoreCard {
         };
     }
 
-    fn clone(&self) -> ScoreCard {
-        let entries = self.entries.iter()
-            .map(|x| (*x).clone())
-            .collect();
-        return ScoreCard { entries };
-    }
-
     fn top_subtotal(&self) -> i32 {
         return self.entries[0..6].iter()
             .filter_map(|x| x.get())
@@ -60,23 +53,21 @@ impl ScoreCard {
         return self.top_total() + self.bottom_total();
     }
 
-    pub fn options(&self, roll: &Roll) -> Vec<(usize, &str, i32, i32)> {
-        return self.entries.iter().enumerate()
+    pub fn get_options(&self, roll: &Roll) -> Vec<(usize, &str, i32, i32)> {
+        let base_total = self.total();
+        return self.entries.iter()
+            .enumerate()
             .filter_map(|(i, e)| {
-                let mut clone = self.clone();  // TODO: avoid full clones
-                return clone.score_by_func_index(roll, i).and_then(|value| {
-                    Some((i + 1, (*e).text(), value, clone.total()))
-                });
+                self.entries[i].clone().try_score(roll).ok().and_then(|score| {
+                    let total = base_total - (*e).get().unwrap_or(0) + score;
+                    return Some((i + 1, (*e).text(), score, total));
+                })
             }).collect();
-    }
-
-    fn score_by_func_index(&mut self, roll: &Roll, index: usize) -> Option<i32> {
-        return self.entries[index].try_score(roll).ok();
     }
 
     pub fn score_by_option(&mut self, roll: &Roll, choice: usize) -> Option<i32> {
         let index = choice.checked_sub(1)?;
-        return self.score_by_func_index(roll, index);
+        return self.entries.get_mut(index)?.try_score(roll).ok();
     }
 }
 
