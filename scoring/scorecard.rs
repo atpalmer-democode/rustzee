@@ -1,27 +1,7 @@
 use crate::roll::Roll;
 
-// SCORE_OPT_TEXT and SCORE_OPT_FUNC are parallel arrays with corresponding elements.
-// Index of SCORE_OPT_TEXT is used to lookup function in SCORE_OPT_FUNC.
-
-type ScoreOpts<T> = [T; 13];
-
-const SCORE_OPT_TEXT: ScoreOpts<&str> = [
-    "Aces",
-    "Twos",
-    "Threes",
-    "Fours",
-    "Fives",
-    "Sixes",
-    "3 of a Kind",
-    "4 of a Kind",
-    "Full House",
-    "Sm. Straight",
-    "Lg. Stright",
-    "Rustzee",
-    "Chance",
-];
-
 pub trait ScoreCardEntry {
+    fn text(&self) -> &str;
     fn clone(&self) -> Box<dyn ScoreCardEntry>;
     fn get(&self) -> Option<i32>;
     fn try_score(&mut self, roll: &Roll) -> Result<i32, i32>;
@@ -62,6 +42,10 @@ pub struct Fives(EntryBase);
 pub struct Sixes(EntryBase);
 
 impl ScoreCardEntry for Aces {
+    fn text(&self) -> &str {
+        return "Aces";
+    }
+
     fn clone(&self) -> Box<dyn ScoreCardEntry> {
         return Box::new(Clone::clone(self));
     }
@@ -77,6 +61,10 @@ impl ScoreCardEntry for Aces {
 }
 
 impl ScoreCardEntry for Twos {
+    fn text(&self) -> &str {
+        return "Twos";
+    }
+
     fn clone(&self) -> Box<dyn ScoreCardEntry> {
         return Box::new(Clone::clone(self));
     }
@@ -92,6 +80,10 @@ impl ScoreCardEntry for Twos {
 }
 
 impl ScoreCardEntry for Threes {
+    fn text(&self) -> &str {
+        return "Threes";
+    }
+
     fn clone(&self) -> Box<dyn ScoreCardEntry> {
         return Box::new(Clone::clone(self));
     }
@@ -107,6 +99,10 @@ impl ScoreCardEntry for Threes {
 }
 
 impl ScoreCardEntry for Fours {
+    fn text(&self) -> &str {
+        return "Fours";
+    }
+
     fn clone(&self) -> Box<dyn ScoreCardEntry> {
         return Box::new(Clone::clone(self));
     }
@@ -122,6 +118,10 @@ impl ScoreCardEntry for Fours {
 }
 
 impl ScoreCardEntry for Fives {
+    fn text(&self) -> &str {
+        return "Fives";
+    }
+
     fn clone(&self) -> Box<dyn ScoreCardEntry> {
         return Box::new(Clone::clone(self));
     }
@@ -137,6 +137,10 @@ impl ScoreCardEntry for Fives {
 }
 
 impl ScoreCardEntry for Sixes {
+    fn text(&self) -> &str {
+        return "Sixes";
+    }
+
     fn clone(&self) -> Box<dyn ScoreCardEntry> {
         return Box::new(Clone::clone(self));
     }
@@ -155,6 +159,10 @@ impl ScoreCardEntry for Sixes {
 pub struct ThreeOfAKind(EntryBase);
 
 impl ScoreCardEntry for ThreeOfAKind {
+    fn text(&self) -> &str {
+        return "3 of a Kind";
+    }
+
     fn clone(&self) -> Box<dyn ScoreCardEntry> {
         return Box::new(Clone::clone(self));
     }
@@ -176,6 +184,10 @@ impl ScoreCardEntry for ThreeOfAKind {
 pub struct FourOfAKind(EntryBase);
 
 impl ScoreCardEntry for FourOfAKind {
+    fn text(&self) -> &str {
+        return "4 of a Kind";
+    }
+
     fn clone(&self) -> Box<dyn ScoreCardEntry> {
         return Box::new(Clone::clone(self));
     }
@@ -197,6 +209,10 @@ impl ScoreCardEntry for FourOfAKind {
 pub struct FullHouse(EntryBase);
 
 impl ScoreCardEntry for FullHouse {
+    fn text(&self) -> &str {
+        return "Full House";
+    }
+
     fn clone(&self) -> Box<dyn ScoreCardEntry> {
         return Box::new(Clone::clone(self));
     }
@@ -218,6 +234,10 @@ impl ScoreCardEntry for FullHouse {
 pub struct SmallStraight(EntryBase);
 
 impl ScoreCardEntry for SmallStraight {
+    fn text(&self) -> &str {
+        return "Sm. Straight";
+    }
+
     fn clone(&self) -> Box<dyn ScoreCardEntry> {
         return Box::new(Clone::clone(self));
     }
@@ -239,6 +259,10 @@ impl ScoreCardEntry for SmallStraight {
 pub struct LargeStraight(EntryBase);
 
 impl ScoreCardEntry for LargeStraight {
+    fn text(&self) -> &str {
+        return "Lg. Straight";
+    }
+
     fn clone(&self) -> Box<dyn ScoreCardEntry> {
         return Box::new(Clone::clone(self));
     }
@@ -260,6 +284,10 @@ impl ScoreCardEntry for LargeStraight {
 pub struct Chance(EntryBase);
 
 impl ScoreCardEntry for Chance {
+    fn text(&self) -> &str {
+        return "Chance";
+    }
+
     fn clone(&self) -> Box<dyn ScoreCardEntry> {
         return Box::new(Clone::clone(self));
     }
@@ -281,6 +309,10 @@ pub struct Rustzee {
 }
 
 impl ScoreCardEntry for Rustzee {
+    fn text(&self) -> &str {
+        return "Rustzee";
+    }
+
     fn clone(&self) -> Box<dyn ScoreCardEntry> {
         return Box::new(Clone::clone(self));
     }
@@ -364,11 +396,11 @@ impl ScoreCard {
     }
 
     pub fn options(&self, roll: &Roll) -> Vec<(usize, &str, i32, i32)> {
-        return SCORE_OPT_TEXT.iter().enumerate()
-            .filter_map(|(i, text)| {
-                let mut clone = self.clone();
+        return self.entries.iter().enumerate()
+            .filter_map(|(i, e)| {
+                let mut clone = self.clone();  // TODO: avoid full clones
                 return clone.score_by_func_index(roll, i).and_then(|value| {
-                    Some((i + 1, *text, value, clone.total()))
+                    Some((i + 1, (*e).text(), value, clone.total()))
                 });
             }).collect();
     }
