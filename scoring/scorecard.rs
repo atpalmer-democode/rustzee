@@ -237,6 +237,32 @@ impl Chance {
     }
 }
 
+#[derive(Default, Clone)]
+pub struct Rustzee {
+    first: ScoreCardEntry,
+    bonus: i32,
+}
+
+impl Rustzee {
+    pub fn get(&self) -> Option<i32> {
+        return self.first.get().and_then(|v| Some(v + self.bonus));
+    }
+
+    pub fn try_score(&mut self, roll: &Roll) -> Result<i32, i32> {
+        if !roll.has_kind(5) {
+            return self.first.try_set(0);
+        }
+        return match self.first.get() {
+            None => self.first.try_set(50),
+            Some(50) => {
+                self.bonus += 100;
+                return Ok(50 + self.bonus);
+            },
+            Some(v) => panic!("First Rustzee has value: {}", v)
+        };
+    }
+}
+
 
 #[derive(Default, Clone)]
 pub struct ScoreCard {
@@ -251,9 +277,8 @@ pub struct ScoreCard {
     pub(crate) full_house: FullHouse,
     pub(crate) small_straight: SmallStraight,
     pub(crate) large_straight: LargeStraight,
-    pub(crate) rustzee: ScoreCardEntry,
+    pub(crate) rustzee: Rustzee,
     pub(crate) chance: Chance,
-    pub(crate) rustzee_bonus: i32,
 }
 
 impl ScoreCard {
@@ -293,7 +318,6 @@ impl ScoreCard {
             self.large_straight.get(),
             self.rustzee.get(),
             self.chance.get(),
-            Some(self.rustzee_bonus),
         ];
         return items.iter().filter_map(|x| *x).sum();
     }

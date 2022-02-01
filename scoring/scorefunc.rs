@@ -53,15 +53,6 @@ pub fn score_chance(card: &mut ScoreCard, roll: &Roll) -> Result<i32, i32> {
 }
 
 pub fn score_rustzee(card: &mut ScoreCard, roll: &Roll) -> Result<i32, i32> {
-    if !roll.has_kind(5) {
-        return card.rustzee.try_set(0);
-    }
-    return match card.rustzee.get() {
-        Some(50) => {
-            card.rustzee_bonus += 100;
-            return Ok(card.rustzee_bonus);
-        },
-        _ => card.rustzee.try_set(50),
-    };
+    return card.rustzee.try_score(roll);
 }
 
