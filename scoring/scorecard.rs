@@ -39,9 +39,9 @@ const SCORE_OPT_FUNC: ScoreOpts<scorefunc::ScoreFunc> = [
 ];
 
 #[derive(Default, Clone)]
-pub struct ScoreCardEntry(Option<i32>);
+pub struct EntryBase(Option<i32>);
 
-impl ScoreCardEntry {
+impl EntryBase {
     pub fn get(&self) -> Option<i32> {
         return self.0;
     }
@@ -55,22 +55,22 @@ impl ScoreCardEntry {
 }
 
 #[derive(Default, Clone)]
-pub struct Aces(ScoreCardEntry);
+pub struct Aces(EntryBase);
 
 #[derive(Default, Clone)]
-pub struct Twos(ScoreCardEntry);
+pub struct Twos(EntryBase);
 
 #[derive(Default, Clone)]
-pub struct Threes(ScoreCardEntry);
+pub struct Threes(EntryBase);
 
 #[derive(Default, Clone)]
-pub struct Fours(ScoreCardEntry);
+pub struct Fours(EntryBase);
 
 #[derive(Default, Clone)]
-pub struct Fives(ScoreCardEntry);
+pub struct Fives(EntryBase);
 
 #[derive(Default, Clone)]
-pub struct Sixes(ScoreCardEntry);
+pub struct Sixes(EntryBase);
 
 impl Aces {
     pub fn get(&self) -> Option<i32> {
@@ -139,7 +139,7 @@ impl Sixes {
 }
 
 #[derive(Default, Clone)]
-pub struct ThreeOfAKind(ScoreCardEntry);
+pub struct ThreeOfAKind(EntryBase);
 
 impl ThreeOfAKind {
     pub fn get(&self) -> Option<i32> {
@@ -156,7 +156,7 @@ impl ThreeOfAKind {
 }
 
 #[derive(Default, Clone)]
-pub struct FourOfAKind(ScoreCardEntry);
+pub struct FourOfAKind(EntryBase);
 
 impl FourOfAKind {
     pub fn get(&self) -> Option<i32> {
@@ -173,7 +173,7 @@ impl FourOfAKind {
 }
 
 #[derive(Default, Clone)]
-pub struct FullHouse(ScoreCardEntry);
+pub struct FullHouse(EntryBase);
 
 impl FullHouse {
     pub fn get(&self) -> Option<i32> {
@@ -190,7 +190,7 @@ impl FullHouse {
 }
 
 #[derive(Default, Clone)]
-pub struct SmallStraight(ScoreCardEntry);
+pub struct SmallStraight(EntryBase);
 
 impl SmallStraight {
     pub fn get(&self) -> Option<i32> {
@@ -207,7 +207,7 @@ impl SmallStraight {
 }
 
 #[derive(Default, Clone)]
-pub struct LargeStraight(ScoreCardEntry);
+pub struct LargeStraight(EntryBase);
 
 impl LargeStraight {
     pub fn get(&self) -> Option<i32> {
@@ -224,7 +224,7 @@ impl LargeStraight {
 }
 
 #[derive(Default, Clone)]
-pub struct Chance(ScoreCardEntry);
+pub struct Chance(EntryBase);
 
 impl Chance {
     pub fn get(&self) -> Option<i32> {
@@ -239,7 +239,7 @@ impl Chance {
 
 #[derive(Default, Clone)]
 pub struct Rustzee {
-    first: ScoreCardEntry,
+    first: EntryBase,
     bonus: i32,
 }
 
