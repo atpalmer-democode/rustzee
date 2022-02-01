@@ -38,6 +38,11 @@ const SCORE_OPT_FUNC: ScoreOpts<scorefunc::ScoreFunc> = [
     scorefunc::score_chance,
 ];
 
+pub trait ScoreCardEntry {
+    fn get(&self) -> Option<i32>;
+    fn try_score(&mut self, roll: &Roll) -> Result<i32, i32>;
+}
+
 #[derive(Default, Clone)]
 pub struct EntryBase(Option<i32>);
 
@@ -72,67 +77,67 @@ pub struct Fives(EntryBase);
 #[derive(Default, Clone)]
 pub struct Sixes(EntryBase);
 
-impl Aces {
-    pub fn get(&self) -> Option<i32> {
+impl ScoreCardEntry for Aces {
+    fn get(&self) -> Option<i32> {
         return self.0.get();
     }
 
-    pub fn try_score(&mut self, roll: &Roll) -> Result<i32, i32> {
+    fn try_score(&mut self, roll: &Roll) -> Result<i32, i32> {
         let result = roll.die_value_total(1);
         return self.0.try_set(result);
     }
 }
 
-impl Twos {
-    pub fn get(&self) -> Option<i32> {
+impl ScoreCardEntry for Twos {
+    fn get(&self) -> Option<i32> {
         return self.0.get();
     }
 
-    pub fn try_score(&mut self, roll: &Roll) -> Result<i32, i32> {
+    fn try_score(&mut self, roll: &Roll) -> Result<i32, i32> {
         let result = roll.die_value_total(2);
         return self.0.try_set(result);
     }
 }
 
-impl Threes {
-    pub fn get(&self) -> Option<i32> {
+impl ScoreCardEntry for Threes {
+    fn get(&self) -> Option<i32> {
         return self.0.get();
     }
 
-    pub fn try_score(&mut self, roll: &Roll) -> Result<i32, i32> {
+    fn try_score(&mut self, roll: &Roll) -> Result<i32, i32> {
         let result = roll.die_value_total(3);
         return self.0.try_set(result);
     }
 }
 
-impl Fours {
-    pub fn get(&self) -> Option<i32> {
+impl ScoreCardEntry for Fours {
+    fn get(&self) -> Option<i32> {
         return self.0.get();
     }
 
-    pub fn try_score(&mut self, roll: &Roll) -> Result<i32, i32> {
+    fn try_score(&mut self, roll: &Roll) -> Result<i32, i32> {
         let result = roll.die_value_total(4);
         return self.0.try_set(result);
     }
 }
 
-impl Fives {
-    pub fn get(&self) -> Option<i32> {
+impl ScoreCardEntry for Fives {
+    fn get(&self) -> Option<i32> {
         return self.0.get();
     }
 
-    pub fn try_score(&mut self, roll: &Roll) -> Result<i32, i32> {
+    fn try_score(&mut self, roll: &Roll) -> Result<i32, i32> {
         let result = roll.die_value_total(5);
         return self.0.try_set(result);
     }
 }
 
-impl Sixes {
-    pub fn get(&self) -> Option<i32> {
+impl ScoreCardEntry for Sixes {
+    fn get(&self) -> Option<i32> {
         return self.0.get();
     }
 
-    pub fn try_score(&mut self, roll: &Roll) -> Result<i32, i32> {
+    fn try_score(&mut self, roll: &Roll) -> Result<i32, i32> {
         let result = roll.die_value_total(6);
         return self.0.try_set(result);
     }
@@ -141,12 +146,12 @@ impl Sixes {
 #[derive(Default, Clone)]
 pub struct ThreeOfAKind(EntryBase);
 
-impl ThreeOfAKind {
-    pub fn get(&self) -> Option<i32> {
+impl ScoreCardEntry for ThreeOfAKind {
+    fn get(&self) -> Option<i32> {
         return self.0.get();
     }
 
-    pub fn try_score(&mut self, roll: &Roll) -> Result<i32, i32> {
+    fn try_score(&mut self, roll: &Roll) -> Result<i32, i32> {
         let result = match roll.has_kind(3) {
             true => roll.total(),
             false => 0,
@@ -158,12 +163,12 @@ impl ThreeOfAKind {
 #[derive(Default, Clone)]
 pub struct FourOfAKind(EntryBase);
 
-impl FourOfAKind {
-    pub fn get(&self) -> Option<i32> {
+impl ScoreCardEntry for FourOfAKind {
+    fn get(&self) -> Option<i32> {
         return self.0.get();
     }
 
-    pub fn try_score(&mut self, roll: &Roll) -> Result<i32, i32> {
+    fn try_score(&mut self, roll: &Roll) -> Result<i32, i32> {
         let result = match roll.has_kind(4) {
             true => roll.total(),
             false => 0,
@@ -175,12 +180,12 @@ impl FourOfAKind {
 #[derive(Default, Clone)]
 pub struct FullHouse(EntryBase);
 
-impl FullHouse {
-    pub fn get(&self) -> Option<i32> {
+impl ScoreCardEntry for FullHouse {
+    fn get(&self) -> Option<i32> {
         return self.0.get();
     }
 
-    pub fn try_score(&mut self, roll: &Roll) -> Result<i32, i32> {
+    fn try_score(&mut self, roll: &Roll) -> Result<i32, i32> {
         let result = match roll.has_exact(3) && roll.has_exact(2) {
             true => 25,
             false => 0,
@@ -192,12 +197,12 @@ impl FullHouse {
 #[derive(Default, Clone)]
 pub struct SmallStraight(EntryBase);
 
-impl SmallStraight {
-    pub fn get(&self) -> Option<i32> {
+impl ScoreCardEntry for SmallStraight {
+    fn get(&self) -> Option<i32> {
         return self.0.get();
     }
 
-    pub fn try_score(&mut self, roll: &Roll) -> Result<i32, i32> {
+    fn try_score(&mut self, roll: &Roll) -> Result<i32, i32> {
         let result = match roll.straight_len() >= 4 {
             true => 30,
             false => 0,
@@ -209,12 +214,12 @@ impl SmallStraight {
 #[derive(Default, Clone)]
 pub struct LargeStraight(EntryBase);
 
-impl LargeStraight {
-    pub fn get(&self) -> Option<i32> {
+impl ScoreCardEntry for LargeStraight {
+    fn get(&self) -> Option<i32> {
         return self.0.get();
     }
 
-    pub fn try_score(&mut self, roll: &Roll) -> Result<i32, i32> {
+    fn try_score(&mut self, roll: &Roll) -> Result<i32, i32> {
         let result = match roll.straight_len() == 5 {
             true => 40,
             false => 0,
@@ -226,12 +231,12 @@ impl LargeStraight {
 #[derive(Default, Clone)]
 pub struct Chance(EntryBase);
 
-impl Chance {
-    pub fn get(&self) -> Option<i32> {
+impl ScoreCardEntry for Chance {
+    fn get(&self) -> Option<i32> {
         return self.0.get();
     }
 
-    pub fn try_score(&mut self, roll: &Roll) -> Result<i32, i32> {
+    fn try_score(&mut self, roll: &Roll) -> Result<i32, i32> {
         let result = roll.total();
         return self.0.try_set(result);
     }
@@ -243,12 +248,12 @@ pub struct Rustzee {
     bonus: i32,
 }
 
-impl Rustzee {
-    pub fn get(&self) -> Option<i32> {
+impl ScoreCardEntry for Rustzee {
+    fn get(&self) -> Option<i32> {
         return self.first.get().and_then(|v| Some(v + self.bonus));
     }
 
-    pub fn try_score(&mut self, roll: &Roll) -> Result<i32, i32> {
+    fn try_score(&mut self, roll: &Roll) -> Result<i32, i32> {
         if !roll.has_kind(5) {
             return self.first.try_set(0);
         }

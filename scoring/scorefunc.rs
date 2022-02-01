@@ -1,5 +1,5 @@
 use crate::Roll;
-use super::scorecard::ScoreCard;
+use super::scorecard::{ScoreCard, ScoreCardEntry};
 
 
 pub type ScoreFunc = for<'sc, 'r> fn(&'sc mut ScoreCard, &'r Roll) -> Result<i32, i32>;
