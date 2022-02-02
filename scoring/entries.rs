@@ -1,8 +1,19 @@
 use crate::roll::Roll;
 
-pub trait ScoreCardEntry {
-    fn text(&self) -> &str;
+// .clone for dyn (unsized) trait objects,
+// where Clone trait is incompatible
+pub trait ScoreCardEntryClone {
     fn clone(&self) -> Box<dyn ScoreCardEntry>;
+}
+
+impl<T: 'static + ScoreCardEntry + Clone> ScoreCardEntryClone for T {
+    fn clone(&self) -> Box<dyn ScoreCardEntry> {
+        return Box::new(Clone::clone(self));
+    }
+}
+
+pub trait ScoreCardEntry : ScoreCardEntryClone {
+    fn text(&self) -> &str;
     fn get(&self) -> Option<i32>;
     fn try_score(&mut self, roll: &Roll) -> Result<i32, i32>;
 }
@@ -46,10 +57,6 @@ impl ScoreCardEntry for Aces {
         return "Aces";
     }
 
-    fn clone(&self) -> Box<dyn ScoreCardEntry> {
-        return Box::new(Clone::clone(self));
-    }
-
     fn get(&self) -> Option<i32> {
         return self.0.get();
     }
@@ -63,10 +70,6 @@ impl ScoreCardEntry for Aces {
 impl ScoreCardEntry for Twos {
     fn text(&self) -> &str {
         return "Twos";
-    }
-
-    fn clone(&self) -> Box<dyn ScoreCardEntry> {
-        return Box::new(Clone::clone(self));
     }
 
     fn get(&self) -> Option<i32> {
@@ -84,10 +87,6 @@ impl ScoreCardEntry for Threes {
         return "Threes";
     }
 
-    fn clone(&self) -> Box<dyn ScoreCardEntry> {
-        return Box::new(Clone::clone(self));
-    }
-
     fn get(&self) -> Option<i32> {
         return self.0.get();
     }
@@ -101,10 +100,6 @@ impl ScoreCardEntry for Threes {
 impl ScoreCardEntry for Fours {
     fn text(&self) -> &str {
         return "Fours";
-    }
-
-    fn clone(&self) -> Box<dyn ScoreCardEntry> {
-        return Box::new(Clone::clone(self));
     }
 
     fn get(&self) -> Option<i32> {
@@ -122,10 +117,6 @@ impl ScoreCardEntry for Fives {
         return "Fives";
     }
 
-    fn clone(&self) -> Box<dyn ScoreCardEntry> {
-        return Box::new(Clone::clone(self));
-    }
-
     fn get(&self) -> Option<i32> {
         return self.0.get();
     }
@@ -139,10 +130,6 @@ impl ScoreCardEntry for Fives {
 impl ScoreCardEntry for Sixes {
     fn text(&self) -> &str {
         return "Sixes";
-    }
-
-    fn clone(&self) -> Box<dyn ScoreCardEntry> {
-        return Box::new(Clone::clone(self));
     }
 
     fn get(&self) -> Option<i32> {
@@ -161,10 +148,6 @@ pub struct ThreeOfAKind(EntryBase);
 impl ScoreCardEntry for ThreeOfAKind {
     fn text(&self) -> &str {
         return "3 of a Kind";
-    }
-
-    fn clone(&self) -> Box<dyn ScoreCardEntry> {
-        return Box::new(Clone::clone(self));
     }
 
     fn get(&self) -> Option<i32> {
@@ -188,10 +171,6 @@ impl ScoreCardEntry for FourOfAKind {
         return "4 of a Kind";
     }
 
-    fn clone(&self) -> Box<dyn ScoreCardEntry> {
-        return Box::new(Clone::clone(self));
-    }
-
     fn get(&self) -> Option<i32> {
         return self.0.get();
     }
@@ -211,10 +190,6 @@ pub struct FullHouse(EntryBase);
 impl ScoreCardEntry for FullHouse {
     fn text(&self) -> &str {
         return "Full House";
-    }
-
-    fn clone(&self) -> Box<dyn ScoreCardEntry> {
-        return Box::new(Clone::clone(self));
     }
 
     fn get(&self) -> Option<i32> {
@@ -238,10 +213,6 @@ impl ScoreCardEntry for SmallStraight {
         return "Sm. Straight";
     }
 
-    fn clone(&self) -> Box<dyn ScoreCardEntry> {
-        return Box::new(Clone::clone(self));
-    }
-
     fn get(&self) -> Option<i32> {
         return self.0.get();
     }
@@ -261,10 +232,6 @@ pub struct LargeStraight(EntryBase);
 impl ScoreCardEntry for LargeStraight {
     fn text(&self) -> &str {
         return "Lg. Straight";
-    }
-
-    fn clone(&self) -> Box<dyn ScoreCardEntry> {
-        return Box::new(Clone::clone(self));
     }
 
     fn get(&self) -> Option<i32> {
@@ -288,10 +255,6 @@ impl ScoreCardEntry for Chance {
         return "Chance";
     }
 
-    fn clone(&self) -> Box<dyn ScoreCardEntry> {
-        return Box::new(Clone::clone(self));
-    }
-
     fn get(&self) -> Option<i32> {
         return self.0.get();
     }
@@ -311,10 +274,6 @@ pub struct Rustzee {
 impl ScoreCardEntry for Rustzee {
     fn text(&self) -> &str {
         return "Rustzee";
-    }
-
-    fn clone(&self) -> Box<dyn ScoreCardEntry> {
-        return Box::new(Clone::clone(self));
     }
 
     fn get(&self) -> Option<i32> {
